@@ -261,9 +261,12 @@ public:
 
 double angle_between_normals(plane plane1, plane plane2) { //a function to calculate angles between a given triangle and neighbor triangles
 
-	double expression = abs(plane::dot_product(plane1.get_normal(), plane2.get_normal())) / (plane::length(plane1.get_normal()) * plane::length(plane2.get_normal()));
-	double angle = acos(expression);
-	return angle * converter;
+	double numerator = abs(plane::dot_product(plane1.get_normal(), plane2.get_normal()));
+	double denominator = (plane::length(plane1.get_normal()) * plane::length(plane2.get_normal()));
+	if (denominator < eps) { return -9999; }
+		else {
+			return acos(numerator / denominator) * converter;
+		}
 }
 
 double euclidean_between_normals(plane plane1, plane plane2) { //a function to calculate angles between a given triangle and neighbor triangles
@@ -275,14 +278,22 @@ double euclidean_between_normals(plane plane1, plane plane2) { //a function to c
 
 double cosine_distance_between_normals(plane plane1, plane plane2) { //a function to calculate angles between a given triangle and neighbor triangles
 
-	return 1 - (plane::dot_product(plane1.get_normal(), plane2.get_normal())) / (plane::length(plane1.get_normal()) * plane::length(plane2.get_normal()));
+	double numerator = plane::dot_product(plane1.get_normal(), plane2.get_normal());
+	double denominator = plane::length(plane1.get_normal()) * plane::length(plane2.get_normal());
+	if (denominator < eps) { return -9999; }
+	else {
+		return 1 - numerator / denominator;
+	}
 }
 
 double angle_between_dips(plane plane1, plane plane2) { //a function to calculate angles between a given triangle and neighbor triangles
 
-	double expression = abs(plane::dot_product(plane1.get_dip(), plane2.get_dip())) / (plane::length(plane1.get_dip()) * plane::length(plane2.get_dip()));
-	double angle = acos(expression);
-	return angle * converter;
+	double numerator = abs(plane::dot_product(plane1.get_dip(), plane2.get_dip()));
+	double denominator = plane::length(plane1.get_dip()) * plane::length(plane2.get_dip());
+	if (denominator < eps) { return -9999; }
+	else {
+		return acos(numerator / denominator) * converter;
+	}
 }
 
 double euclidean_between_dip_vectors(plane plane1, plane plane2) { //a function to calculate angles between a given triangle and neighbor triangles
@@ -292,10 +303,14 @@ double euclidean_between_dip_vectors(plane plane1, plane plane2) { //a function 
 	return sqrt(pow(first_dip[0] - second_dip[0], 2) + pow(first_dip[1] - second_dip[1], 2) + pow(first_dip[2] - second_dip[2], 2));
 }
 
-
 double cosine_distance_between_dips(plane plane1, plane plane2) { //a function to calculate angles between a given triangle and neighbor triangles
 
-	return 1 - (plane::dot_product(plane1.get_dip(), plane2.get_dip())) / (plane::length(plane1.get_dip()) * plane::length(plane2.get_dip()));
+	double numerator = plane::dot_product(plane1.get_dip(), plane2.get_dip());
+	double denominator=	plane::length(plane1.get_dip()) * plane::length(plane2.get_dip());
+	if (denominator < eps) { return -9999; }
+	else {
+		return 1 - numerator / denominator;
+	}
 }
 
 
