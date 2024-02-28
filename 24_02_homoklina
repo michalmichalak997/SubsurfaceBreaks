@@ -1117,9 +1117,9 @@ int main()
 				d1_x_d = -9999; //fake coordinates for dip vectors of the infinite neighbor
 				d1_y_d = -9999;
 				d1_z_d = -9999;
-				centroid_n1.push_back("not defined");
-				centroid_n1.push_back("not defined");
-				centroid_n1.push_back("not defined");
+				centroid_n1.push_back("undefined");
+				centroid_n1.push_back("undefined");
+				centroid_n1.push_back("undefined");
 				//n_euclidean1, n_angle1, n_cos1, n_euclidean1, d_angle1, d_cos1 = -9999;
 			}
 			else {
@@ -1175,9 +1175,9 @@ int main()
 				d2_x_d = -9999; //fake coordinates for dip vectors of the infinite neighbor
 				d2_y_d = -9999;
 				d2_z_d = -9999;
-				centroid_n2.push_back("not defined");
-				centroid_n2.push_back("not defined");
-				centroid_n2.push_back("not defined");
+				centroid_n2.push_back("undefined");
+				centroid_n2.push_back("undefined");
+				centroid_n2.push_back("undefined");
 				//n_euclidean2, n_angle2, n_cos2, n_euclidean2, d_angle2, d_cos2= -9999;
 			}
 			else {
@@ -1233,9 +1233,9 @@ int main()
 				d3_y_d = -9999;
 				d3_z_d = -9999;
 
-				centroid_n3.push_back("not defined");
-				centroid_n3.push_back("not defined");
-				centroid_n3.push_back("not defined");
+				centroid_n3.push_back("undefined");
+				centroid_n3.push_back("undefined");
+				centroid_n3.push_back("undefined");
 				//n_euclidean3, n_angle3, n_cos3, n_euclidean3, d_angle3, d_cos3 = -9999;
 			}
 			else {
