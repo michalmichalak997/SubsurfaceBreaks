@@ -79,13 +79,17 @@ public:
 	}
 
 	double dip_angle(vector<double> z_axis, vector<double> normal_v) //function that computes the dip angle
-	{
-		double angle;
-		double expression;
-		expression = abs(dot_product(z_axis, normal_v)) / (length(z_axis) * length(normal_v));
-		angle = acos(expression);
-		return angle * converter;
+{
+	double angle;
+	double numerator = abs(dot_product(z_axis, normal_v));
+	//double denominator = plane::length(plane1.get_normal()) * plane::length(plane2.get_normal());
+	if (numerator >= 1.0) {
+		return 0;
 	}
+	else {
+		return acos(numerator) * converter;
+	}
+}
 
 	static double dot_product(vector<double> vector_line, vector<double> direction, int n = 3) //function that computes the dot product of vectors
 	{
