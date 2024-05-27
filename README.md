@@ -44,6 +44,8 @@ To increase quality of the created programs, we performed tests with regard to t
 
 1. It tests whether the points are sorted according to the Z (elevation) value. It is achieved using lambda expressions. This is important in terms of calculating the random fractions of the elevation differences used to determine noise and fault throw levels.
 2. It tests whether the orientations supplied in the dip angle/dip direction format are properly converted into vector Cartesian coordinates by back-converting the vectors into the dip angle/dip direction format. A toleration for deviations double eps=0.01 due to floating-point round-off errors is introduced.
+
+
 ![test_program_converted2](https://github.com/michalmichalak997/MLgeom/assets/28152295/f052e2a3-63fd-495a-99b7-a44ad10582b0)
 
 As can be seen, angles 3 and 363 are considered equal. This is to allow users to sample from intervals crossing N (360=0) direction. For example, the left range of the azimuth can be 355 and the right range can be 5 (which is equal to 365). 
