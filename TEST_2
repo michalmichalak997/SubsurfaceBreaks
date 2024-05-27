@@ -1,0 +1,84 @@
+#include <iostream>
+#include <vector>
+#include "math.h"
+#define _USE_MATH_DEFINES
+#include <random>
+#include "assert.h"
+#include <ctime>
+
+using namespace std;
+
+int main()
+{
+    std::random_device rd;
+    std::default_random_engine re(rd());
+    double eps=0.01; //accuracy with which we tolerate deviations due to conversion
+    const double converter=180/ M_PI;
+    int number_of_files=300;
+
+	vector <int> sample_dipdir; //the surfaces will have a random dip dir and random dip direction
+	vector <double> sample_dipang;
+
+	vector <std::pair<double, double>> orientation;
+	double min_terrain_dip =1;
+    double max_terrain_dip = 5; //for the dip
+    int left_range_azimuth=355;
+    int right_range_azimuth=7; //for azimuth
+    cout << "Left range: " << left_range_azimuth << " " << "Right range: " << right_range_azimuth <<  endl;
+    if(right_range_azimuth<left_range_azimuth){
+        right_range_azimuth+=360;
+    }
+
+    std::uniform_real_distribution<double> random_dip(min_terrain_dip, max_terrain_dip);
+	std::uniform_int_distribution<int> random_azimuth(left_range_azimuth, right_range_azimuth);
+
+	for (int i = 0; i < number_of_files; i++) { //sample values of dip direction
+		sample_dipdir.push_back(random_azimuth(re)); //random_azimuth(re)
+	}
+
+	for (int i = 0; i < number_of_files; i++) { //sample values of dip angle - because we have a terrain, we have a maximum limit for dip angle
+		sample_dipang.push_back(random_dip(re)); //random_dip(re)
+		//assert(sample_dipang[i] == 1);
+	}
+
+	for (int i = 0; i < number_of_files; i++) { //sample orientation
+		orientation.push_back(make_pair(sample_dipang[i], sample_dipdir[i]));
+	}
+
+    vector <vector<double>>  poles;
+	vector <double> triplet;
+	cout << "Tests: " << endl;
+	for (int i = 0; i < number_of_files; i++) {
+		double x = -sin(orientation[i].first / converter) * cos(orientation[i].second / converter);
+		double y = -sin(orientation[i].first / converter) * sin(orientation[i].second / converter);
+		double z = -cos(orientation[i].first / converter);
+
+		if (z < 0) {
+			x = x * -1;
+			y = y * -1;
+			z = z * -1;
+		}
+		//The below code tests whether the orientations specified by the user are converted correctly into XYZ coordinates and can be back-transformed into orientations
+
+		double help_azimuth = (atan2(y, x) * converter);
+		if (help_azimuth<0){
+            help_azimuth+=360;
+		}
+		double help_dip_ang= acos(z) * converter;
+        cout << "Back-converted azimuth: " << help_azimuth << " " << "Original azimuth: " << orientation[i].second << endl;
+        cout << "Back-converted dip angle: " << help_dip_ang << " " << "Original dip angle: " << orientation[i].first << endl;
+
+        assert( abs(help_dip_ang-orientation[i].first)<eps ) ;
+        assert( abs(help_azimuth-orientation[i].second)<eps || abs(help_azimuth-orientation[i].second)<360+eps ) ; //or is added because we can have 361 as a right bound for dip direction
+
+        cout << "TESTS PASSED" << endl;
+		triplet.push_back(x);
+		triplet.push_back(y);
+		triplet.push_back(z);
+
+		poles.push_back(triplet);
+		triplet.clear();
+	}
+	cout << "ALL TESTS PASSED" << endl;
+    return 0;
+}
