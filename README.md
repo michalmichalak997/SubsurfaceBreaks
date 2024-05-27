@@ -47,7 +47,7 @@ To increase quality of the created programs, we performed tests with regard to t
 
 As can be seen, the program properly sorted points according to the elevation. 
 
-3. It tests whether the orientations supplied in the dip angle/dip direction format are properly converted into vector Cartesian coordinates by back-converting the vectors into the dip angle/dip direction format. A toleration for deviations double eps=0.01 due to floating-point round-off errors is introduced.
+2. It tests whether the orientations supplied in the dip angle/dip direction format are properly converted into vector Cartesian coordinates by back-converting the vectors into the dip angle/dip direction format. A toleration for deviations double eps=0.01 due to floating-point round-off errors is introduced.
 
 
 ![test_program_converted2](https://github.com/michalmichalak997/MLgeom/assets/28152295/f052e2a3-63fd-495a-99b7-a44ad10582b0)
