@@ -1,1 +1,46 @@
 # MLgeom
+
+This software is intended to detect faults on homocline terrains. The software consists of two three programs:
+
+1. Generating labelled synthetic terrains based on random parameters with bounds introduced by a user.
+2. Detecting faults for synthetic terrains using Support Vector Machine algorithm.
+3. Detecting faults for real terrains with calculated attributes.
+
+We will now explain the components of the framework.
+
+## ad. 1 Generating labelled synthetic terrains based on random parameters with bounds introduced by a user.
+
+The first piece of software uses CGAL library to generate an arbitrary number of geological homoclines with calculated attributes. The homoclines are represented as triangulated terrains and the analysis is done for the faces of the triangulation. The calculated attributes can represent either local geometric attributes such as the orientation of normal and dip vectors or neighborhood analysis including distances between a specific triangle and its neighbors. The user should specify the bounds which determine ranges of intervals for the parameters. Then, random numbers from the uniform distribution are created from the determined intervals. We suggest giving ranges that best mimic the real terrains to be analyzed in the third step.
+
+![program1_documentation](https://github.com/michalmichalak997/MLgeom/assets/28152295/4343e70e-b13a-450f-8623-30dc1d4cfe1f)
+
+In the attached screenshot, we can see that the user requested 300 files (terrains). Then, the size of the terrains is constant because the lower bound (1) is equal to the upper bound (1). The dip angle will not be constant: it will vary between 2 and 5 degrees. Next, the dip direction will also vary between 40 and 70 degrees. The number of points in the triangulated terrains will be the same (100). The noise applied to the surface will be a fraction (1-4%) of the elevation difference of the terrain. The fault throw will be a fraction (5-10%) of the maximum elevation difference within the triangulated terrains. 
+
+![program1_documentation1](https://github.com/michalmichalak997/MLgeom/assets/28152295/3e65ad31-5762-4810-ba8b-ead86269f08d)
+
+Here, we can see a portion of the dataframe resulting from running the first program. Each row corresponds to a triangle of the triangulation, and the key element is the label (-1 or 1) which distinguishes between fault-related and fault-unrelated triangles.
+
+## ad. 2 Detecting faults for synthetic data. 
+
+A Python script is used to apply Support Vector Machine to the synthetic data set. 
+
+![program2_documentation](https://github.com/michalmichalak997/MLgeom/assets/28152295/6276cee8-caaa-4c60-8c44-8480e2d6599b)
+
+The above screenshot presents the key step in the data preparation for supervised classification: the distances with neighbors are sorted (Angle_Max, Angle_Min, Angle_intermediate). This ensures that we eliminate randomness from the analysis, since the initial indices of the neighbors (first, second, third) correspond only to the counterclockwise order of the neighbors (https://graphics.stanford.edu/courses/cs368-04-spring/manuals/CGAL_Tutorial.pdf).
+
+## ad. 3 Detecting faults for real terrains with calculated attributes.
+
+To finish the fault detection framework, the user must calculate terrain attributes for real data. The program from the first step cannot be used because it was intended to create synthetic terrains with labels. And our objective is now to use the fine-tuned program from step 2 to predict fault-related triangles for real data based on geometric attributes (orientation of normal/dip vectors with neighborhood analysis).
+
+## Software used.
+CGAL library v. 4.8.
+
+## Installation. 
+The user has to install the CGAL library to run the attached computer codes specified in points 1 and 3. Newer versions of the CGAL library can be installed using the vcpkg manager (https://www.cgal.org/download/windows.html). However, since we use the 4.8 version, this option may not be available. Therefore, we suggest installing the CGAL (4.8) library using CMAKE GUI. While recommended, it is not mandatory to have QT installation completed to run the above programs.
+
+## Tests 
+
+To increase quality of the created programs, we performed tests with regard to the critical elements of the framework. They are described below and attached in the catalogue as well :
+
+1. Tests whether the points are sorted according to the Z (elevation) value. It is achieved using lambda expressions. This is important in terms of calculating the random fractions of the elevation differences used to determine noise and fault throw levels.
+
