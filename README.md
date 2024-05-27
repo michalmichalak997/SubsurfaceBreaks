@@ -43,7 +43,11 @@ The user has to install the CGAL library to run the attached computer codes spec
 To increase quality of the created programs, we performed tests with regard to the critical elements of the framework. They are described below and attached in the catalogue as well :
 
 1. It tests whether the points are sorted according to the Z (elevation) value. It is achieved using lambda expressions. This is important in terms of calculating the random fractions of the elevation differences used to determine noise and fault throw levels.
-2. It tests whether the orientations supplied in the dip angle/dip direction format are properly converted into vector Cartesian coordinates by back-converting the vectors into the dip angle/dip direction format. A toleration for deviations double eps=0.01 due to floating-point round-off errors is introduced.
+![test_program_points](https://github.com/michalmichalak997/MLgeom/assets/28152295/0d85ab54-2150-4b5f-bbc6-d2d75195db6f)
+
+As can be seen, the program properly sorted points according to the elevation. 
+
+3. It tests whether the orientations supplied in the dip angle/dip direction format are properly converted into vector Cartesian coordinates by back-converting the vectors into the dip angle/dip direction format. A toleration for deviations double eps=0.01 due to floating-point round-off errors is introduced.
 
 
 ![test_program_converted2](https://github.com/michalmichalak997/MLgeom/assets/28152295/f052e2a3-63fd-495a-99b7-a44ad10582b0)
