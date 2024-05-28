@@ -197,9 +197,16 @@ public:
 			normal_vec[1] = normal_vec[1] / normal_length;
 			normal_vec[2] = normal_vec[2] / normal_length;
 
-			dip_vec.push_back(cos(dip_angle(z_axis, normal_vec) / converter) * cos(dip_azimuth(normal_vec) / converter));
-			dip_vec.push_back(cos(dip_angle(z_axis, normal_vec) / converter) * sin(dip_azimuth(normal_vec) / converter));
-			dip_vec.push_back(-sin(dip_angle(z_axis, normal_vec) / converter));
+			if (normal_vec[2] == 1) {
+	dip_vec.push_back(-9999);
+	dip_vec.push_back(-9999);
+	dip_vec.push_back(-9999);
+                              }
+                         else {
+       dip_vec.push_back(cos(dip_angle(z_axis, normal_vec) / converter) * cos(dip_azimuth(normal_vec) / converter));
+       dip_vec.push_back(cos(dip_angle(z_axis, normal_vec) / converter) * sin(dip_azimuth(normal_vec) / converter));
+       dip_vec.push_back(-sin(dip_angle(z_axis, normal_vec) / converter));
+                              }
 
 			measure(); //setting dip_degrees and azimuth_degrees
 		}
