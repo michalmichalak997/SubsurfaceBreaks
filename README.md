@@ -65,6 +65,7 @@ Here, we can see that the differences for cosine distance between C++ and R are 
 Here, we can see that the differences for angular distance are greater, probably due to different implementations of acos() function between C++ and R.
 
 4. Visual inspection of collinearity
+   
 ![collinearity](https://github.com/michalmichalak997/MLgeom/assets/28152295/8b58fb5b-8045-4e06-82b7-c39590f2f43f)
 
 Here, we can see that the coefficient of collinearity (DOC) meets the expectations of pointing to both equilateral (DOC around 0.5) and collinear configurations (DOC close to 1.0).
