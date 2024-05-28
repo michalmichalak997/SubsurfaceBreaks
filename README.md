@@ -1,4 +1,4 @@
-# MLGeom
+# Broken terrains
 
 This software is intended to detect faults on homocline terrains. The software consists of two three programs:
 
