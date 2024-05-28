@@ -54,3 +54,15 @@ As can be seen, the program properly sorted points according to the elevation.
 
 As can be seen, angles 3 and 363 are considered equal. This is to allow users to sample from intervals crossing N (360=0) direction. For example, the left range of the azimuth can be 355 and the right range can be 5 (which is equal to 365). 
 
+3. It tests whether the distances calculated in C++ program are equal to those calculated in R. For Euclidean and cosine distances the differences are very small (E-06). For angular distances the errors are greater (E-04-E-02). This effect can be likely attributed to different implementations of acos() function between C++ and R. We believe that the errors are not significant and can be tolerated for geological applications such as detecting faults on geological terrains. However, if precision is critical, we suggest rewriting the code using other types, for example long double instead of double.
+
+![image](https://github.com/michalmichalak997/MLgeom/assets/28152295/19e77aa5-965c-4052-83a5-12ea19cd6467)
+
+Here, we can see that the differences for cosine distance between C++ and R are very small. 
+
+![test_distances_r2](https://github.com/michalmichalak997/MLgeom/assets/28152295/0fc99891-f976-426c-a3ee-40f96f6b4ac6)
+
+Here, we can see that the differences for angular distance are greater, probably due to different implementations of acos() function between C++ and R.
+
+
+
