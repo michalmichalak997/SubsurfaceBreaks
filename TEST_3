@@ -1,0 +1,135 @@
+library(dplyr)
+
+tab<-read.csv("0.txt", header = T, sep = ";", dec = ".")
+
+head(tab)
+nrow(tab)
+
+tab<- dplyr::filter(tab, EuclideanNeighbor1_N>0 & EuclideanNeighbor2_N>0 & EuclideanNeighbor3_N>0 )
+nrow(tab)
+
+#Testing Euclidean distance for normal vectors
+euclidean_dist1_n=sqrt( (tab$X_N-tab$n1_xn)^2+(tab$Y_N-tab$n1_yn)^2+(tab$Z_N-tab$n1_zn)^2)
+euclidean_dist2_n=sqrt( (tab$X_N-tab$n2_xn)^2+(tab$Y_N-tab$n2_yn)^2+(tab$Z_N-tab$n2_zn)^2)
+euclidean_dist3_n=sqrt( (tab$X_N-tab$n3_xn)^2+(tab$Y_N-tab$n3_yn)^2+(tab$Z_N-tab$n3_zn)^2)
+max(euclidean_dist1_n-tab$EuclideanNeighbor1_N)
+max(euclidean_dist2_n-tab$EuclideanNeighbor2_N )
+max(euclidean_dist3_n-tab$EuclideanNeighbor3_N )
+#Testing Euclidean distance for dip vectors
+euclidean_dist1_d=sqrt( (tab$X_D-tab$n1_xd)^2+(tab$Y_D-tab$n1_yd)^2+(tab$Z_D-tab$n1_zd)^2)
+euclidean_dist2_d=sqrt( (tab$X_D-tab$n2_xd)^2+(tab$Y_D-tab$n2_yd)^2+(tab$Z_D-tab$n2_zd)^2)
+euclidean_dist3_d=sqrt( (tab$X_D-tab$n3_xd)^2+(tab$Y_D-tab$n3_yd)^2+(tab$Z_D-tab$n3_zd)^2)
+max(euclidean_dist1_d-tab$EuclideanNeighbor1_D)
+max(euclidean_dist2_d-tab$EuclideanNeighbor2_D )
+max(euclidean_dist3_d-tab$EuclideanNeighbor3_D )
+#Testing angular distance for normal vectors
+help_angular_dist1_n=tab$X_N*tab$n1_xn+ tab$Y_N*tab$n1_yn+tab$Z_N*tab$n1_zn
+help_angular_dist1_n>1
+help_angular_dist1_n[help_angular_dist1_n>1]=1
+help_angular_dist1_n[help_angular_dist1_n<(-1)]=-1
+angular_dist1_n= acos(help_angular_dist1_n)*180/pi
+
+help_angular_dist2_n=tab$X_N*tab$n2_xn+ tab$Y_N*tab$n2_yn+tab$Z_N*tab$n2_zn
+help_angular_dist2_n>1
+help_angular_dist2_n[help_angular_dist2_n>1]=1
+help_angular_dist2_n[help_angular_dist2_n<(-1)]=-1
+help_angular_dist2_n<(-1)
+help_angular_dist2_n
+angular_dist2_n= acos(help_angular_dist2_n)*180/pi
+
+help_angular_dist3_n=tab$X_N*tab$n3_xn+ tab$Y_N*tab$n3_yn+tab$Z_N*tab$n3_zn
+help_angular_dist3_n>1
+help_angular_dist3_n[help_angular_dist3_n>1]=1
+help_angular_dist3_n[help_angular_dist3_n<(-1)]=-1
+angular_dist3_n= acos(help_angular_dist3_n)*180/pi
+
+angular_dist1_n-tab$AngleNeighbor1_N
+angular_dist2_n-tab$AngleNeighbor2_N
+angular_dist3_n-tab$AngleNeighbor3_N
+
+max(angular_dist1_n-tab$AngleNeighbor1_N)
+max(angular_dist2_n-tab$AngleNeighbor2_N)
+max(angular_dist3_n-tab$AngleNeighbor3_N)
+
+#Testing angular distance for dip vectors
+help_angular_dist1_d=tab$X_D*tab$n1_xd+ tab$Y_D*tab$n1_yd+tab$Z_D*tab$n1_zd
+help_angular_dist1_d>1
+help_angular_dist1_d[help_angular_dist1_d>1]=1
+help_angular_dist1_d[help_angular_dist1_d< (-1) ]=-1
+angular_dist1_d= acos(help_angular_dist1_d)*180/pi
+
+help_angular_dist2_d=tab$X_D*tab$n2_xd+ tab$Y_D*tab$n2_yd+tab$Z_D*tab$n2_zd
+help_angular_dist2_d>1
+help_angular_dist2_d[help_angular_dist2_d>1]=1
+help_angular_dist2_d[help_angular_dist2_d<(-1)]=-1
+angular_dist2_d= acos(help_angular_dist2_d)*180/pi
+
+help_angular_dist3_d=tab$X_D*tab$n3_xd+ tab$Y_D*tab$n3_yd+tab$Z_D*tab$n3_zd
+help_angular_dist3_d>1
+help_angular_dist3_d[help_angular_dist3_d>1]=1
+help_angular_dist3_d[help_angular_dist3_d<(-1)]=-1
+angular_dist3_d= acos(help_angular_dist3_d)*180/pi
+
+angular_dist1_d-tab$AngleNeighbor1_D
+angular_dist2_d-tab$AngleNeighbor2_D
+angular_dist3_d-tab$AngleNeighbor3_D
+
+max(angular_dist1_d-tab$AngleNeighbor1_D)
+max(angular_dist2_d-tab$AngleNeighbor2_D)
+max(angular_dist3_d-tab$AngleNeighbor3_D)
+
+#Testing cosine distance for normal vectors
+help_cosine_dist1_n=tab$X_N*tab$n1_xn+ tab$Y_N*tab$n1_yn+tab$Z_N*tab$n1_zn
+help_cosine_dist1_n>1
+help_cosine_dist1_n[help_cosine_dist1_n>1]=1
+help_cosine_dist1_n[help_cosine_dist1_n<(-1)]=-1
+cosine_dist1_n= 1-help_cosine_dist1_n
+
+help_cosine_dist2_n=tab$X_N*tab$n2_xn+ tab$Y_N*tab$n2_yn+tab$Z_N*tab$n2_zn
+help_cosine_dist2_n>1
+help_cosine_dist2_n[help_cosine_dist2_n>1]=1
+help_cosine_dist2_n[help_cosine_dist2_n<(-1)]=-1
+cosine_dist2_n= 1-help_cosine_dist2_n
+
+help_cosine_dist3_n=tab$X_N*tab$n3_xn+ tab$Y_N*tab$n3_yn+tab$Z_N*tab$n3_zn
+help_cosine_dist3_n>1
+help_cosine_dist3_n[help_cosine_dist3_n>1]=1
+help_cosine_dist3_n[help_cosine_dist3_n<(-1)]=-1
+cosine_dist3_n= 1-help_cosine_dist3_n
+
+cosine_dist1_n-tab$CosineNeighbor1_N
+cosine_dist2_n-tab$CosineNeighbor2_N
+cosine_dist3_n-tab$CosineNeighbor3_N
+
+max(cosine_dist1_n-tab$CosineNeighbor1_N)
+max(cosine_dist1_n-tab$CosineNeighbor1_N)
+max(cosine_dist1_n-tab$CosineNeighbor1_N)
+
+
+#Testing cosine distance for dip vectors
+help_cosine_dist1_d=tab$X_D*tab$n1_xd+ tab$Y_D*tab$n1_yd+tab$Z_D*tab$n1_zd
+help_cosine_dist1_d>1
+help_cosine_dist1_d[help_cosine_dist1_d>1]=1
+help_cosine_dist1_d[help_cosine_dist1_d<(-1)]=-1
+cosine_dist1_d= 1-help_cosine_dist1_d
+
+help_cosine_dist2_d=tab$X_D*tab$n2_xd+ tab$Y_D*tab$n2_yd+tab$Z_D*tab$n2_zd
+help_cosine_dist2_d>1
+help_cosine_dist2_d[help_cosine_dist2_d>1]=1
+help_cosine_dist2_d[help_cosine_dist2_d<(-1)]=-1
+cosine_dist2_d= 1-help_cosine_dist2_d
+
+help_cosine_dist3_d=tab$X_D*tab$n3_xd+ tab$Y_D*tab$n3_yd+tab$Z_D*tab$n3_zd
+help_cosine_dist3_d>1
+help_cosine_dist3_d[help_cosine_dist3_d>1]=1
+help_cosine_dist3_d[help_cosine_dist3_d<(-1)]=-1
+cosine_dist3_d= 1-help_cosine_dist3_d
+
+cosine_dist1_d-tab$CosineNeighbor1_D
+cosine_dist2_d-tab$CosineNeighbor2_D
+cosine_dist3_d-tab$CosineNeighbor3_D
+
+max(cosine_dist1_d-tab$CosineNeighbor1_D)
+max(cosine_dist2_d-tab$CosineNeighbor2_D)
+max(cosine_dist3_d-tab$CosineNeighbor3_D)
+
