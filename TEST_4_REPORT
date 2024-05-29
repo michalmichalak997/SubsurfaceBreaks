@@ -1,0 +1,149 @@
+p1:  -1 0 1.  ind: 6
+p2:  0 -1 0.  ind: 5
+p3:  0 1 0.  ind: 1
+
+Dip angle: 45.000000
+Dip direction: 0.000000
+Normal vector: 0.707107 0 0.707107
+Dip vector: 0.707107 0 -0.707107
+Neighbor 1 - p1:  0 -1 0
+Neighbor 1 - p2:  1 0 0
+Neighbor 1 - p3:  0 1 0
+Dip angle: 0
+Dip direction: x
+Neighbor 1 - nx:  0
+Neighbor 1 - ny:  0
+Neighbor 1 - nz:  1
+Neighbor 1 - dx:  -9999
+Neighbor 1 - dy:  -9999
+Neighbor 1 - dz:  -9999
+Neighbor 1 - normal Euclidean:  0.765367
+Neighbor 1 - normal angle:  45
+Neighbor 1 - normal cosine:  0.292893
+Neighbor 1 - dips Euclidean:  17318.8
+Neighbor 1 - dips angle:  90
+Neighbor 1 - dips cosine:  1
+
+ The end of finite neighbors
+
+p1:  0 -1 0.  ind: 5
+p2:  1 0 0.  ind: 3
+p3:  0 1 0.  ind: 1
+
+Dip angle: 0
+Dip direction: x
+Normal vector: 0 0 1
+Dip vector: -9999 -9999 -9999
+Neighbor 1 - p1:  0 1 0
+Neighbor 1 - p2:  1 0 0
+Neighbor 1 - p3:  1 1 -1
+Dip angle: 54.735610
+Dip direction: 45.000000
+Neighbor 1 - nx:  0.57735
+Neighbor 1 - ny:  0.57735
+Neighbor 1 - nz:  0.57735
+Neighbor 1 - dx:  0.408248
+Neighbor 1 - dy:  0.408248
+Neighbor 1 - dz:  -0.816497
+Neighbor 1 - normal Euclidean:  0.919402
+Neighbor 1 - normal angle:  54.7356
+Neighbor 1 - normal cosine:  0.42265
+Neighbor 1 - dips Euclidean:  17318.8
+Neighbor 1 - dips angle:  90
+Neighbor 1 - dips cosine:  1
+
+Neighbor 2 - p1:  -1 0 1
+Neighbor 2 - p2:  0 -1 0
+Neighbor 2 - p3:  0 1 0
+Dip angle: 45.000000
+Dip direction: 0.000000
+Neighbor 2 - nx:  0.707107
+Neighbor 2 - ny:  0
+Neighbor 2 - nz:  0.707107
+Neighbor 2 - dx:  0.707107
+Neighbor 2 - dy:  0
+Neighbor 2 - dz:  -0.707107
+Neighbor 2 - normal Euclidean:  0.765367
+Neighbor 2 - normal angle:  45
+Neighbor 2 - normal cosine:  0.292893
+Neighbor 2 - dips Euclidean:  17318.8
+Neighbor 2 - dips angle:  90
+Neighbor 2 - dips cosine:  1
+
+Neighbor 3 - p1:  0 -1 0
+Neighbor 3 - p2:  1 -1 -1
+Neighbor 3 - p3:  1 0 0
+Dip angle: 54.735610
+Dip direction: 315.000000
+Neighbor 3 - nx:  0.57735
+Neighbor 3 - ny:  -0.57735
+Neighbor 3 - nz:  0.57735
+Neighbor 3 - dx:  0.408248
+Neighbor 3 - dy:  -0.408248
+Neighbor 3 - dz:  -0.816497
+Neighbor 3 - normal Euclidean:  0.919402
+Neighbor 3 - normal angle:  54.7356
+Neighbor 3 - normal cosine:  0.42265
+Neighbor 3 - dips Euclidean:  17318.3
+Neighbor 3 - dips angle:  0
+Neighbor 3 - dips cosine:  0
+
+ The end of finite neighbors
+
+p1:  0 1 0.  ind: 1
+p2:  1 0 0.  ind: 3
+p3:  1 1 -1.  ind: 2
+
+Dip angle: 54.735610
+Dip direction: 45.000000
+Normal vector: 0.57735 0.57735 0.57735
+Dip vector: 0.408248 0.408248 -0.816497
+Neighbor 3 - p1:  0 -1 0
+Neighbor 3 - p2:  1 0 0
+Neighbor 3 - p3:  0 1 0
+Dip angle: 0
+Dip direction: x
+Neighbor 3 - nx:  0
+Neighbor 3 - ny:  0
+Neighbor 3 - nz:  1
+Neighbor 3 - dx:  -9999
+Neighbor 3 - dy:  -9999
+Neighbor 3 - dz:  -9999
+Neighbor 3 - normal Euclidean:  0.919402
+Neighbor 3 - normal angle:  54.7356
+Neighbor 3 - normal cosine:  0.42265
+Neighbor 3 - dips Euclidean:  17318.8
+Neighbor 3 - dips angle:  90
+Neighbor 3 - dips cosine:  1
+
+ The end of finite neighbors
+
+p1:  0 -1 0.  ind: 5
+p2:  1 -1 -1.  ind: 4
+p3:  1 0 0.  ind: 3
+
+Dip angle: 54.735610
+Dip direction: 315.000000
+Normal vector: 0.57735 -0.57735 0.57735
+Dip vector: 0.408248 -0.408248 -0.816497
+Neighbor 2 - p1:  0 -1 0
+Neighbor 2 - p2:  1 0 0
+Neighbor 2 - p3:  0 1 0
+Dip angle: 0
+Dip direction: x
+Neighbor 2 - nx:  0
+Neighbor 2 - ny:  0
+Neighbor 2 - nz:  1
+Neighbor 2 - dx:  -9999
+Neighbor 2 - dy:  -9999
+Neighbor 2 - dz:  -9999
+Neighbor 2 - normal Euclidean:  0.919402
+Neighbor 2 - normal angle:  54.7356
+Neighbor 2 - normal cosine:  0.42265
+Neighbor 2 - dips Euclidean:  17318.3
+Neighbor 2 - dips angle:  0
+Neighbor 2 - dips cosine:  0
+
+ The end of finite neighbors
+
+Press any key to continue . . .
