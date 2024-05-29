@@ -49,7 +49,6 @@ As can be seen, the program properly sorted points according to the elevation.
 
 2. It tests whether the orientations supplied in the dip angle/dip direction format are properly converted into vector Cartesian coordinates by back-converting the vectors into the dip angle/dip direction format. A toleration for deviations double eps=0.01 due to floating-point round-off errors is introduced.
 
-
 ![test_program_converted2](https://github.com/michalmichalak997/MLgeom/assets/28152295/f052e2a3-63fd-495a-99b7-a44ad10582b0)
 
 As can be seen, angles 3 and 363 are considered equal. This is to allow users to sample from intervals crossing N (360=0) direction. For example, the left range of the azimuth can be 355 and the right range can be 5 (which is equal to 365). 
@@ -64,8 +63,11 @@ Here, we can see that the differences for cosine distance between C++ and R are 
 
 Here, we can see that the differences for angular distance are greater, probably due to different implementations of acos() function between C++ and R.
 
-4. Calculation of distances between a triangle and its neighbors. We prepared 6 data points resulting in a triangulation 4 faces. We compared the results with those obtained in a spreadsheet. We didn't obtain any serious issues with the results. We note that the dip vector representation is not applicable for horizontal observations because the dip vector is not uniquely defined. Therefore, distances calculated for dip-vector-representations of horizontal observations are invalid. To create greater awareness of this problem, dip vectors of horizontal observations are represented ad [-9999,-9999,-9999]. The code, reports and the spreadsheet are attached as separate files.
+4. Calculation of distances between a triangle and its neighbors. We prepared 6 data points resulting in a triangulation 4 faces. We compared the results with those obtained in a spreadsheet. We didn't obtain any serious issues with the results. We note that the dip vector representation is not applicable for horizontal observations because the dip vector is not uniquely defined. Therefore, distances calculated for dip-vector-representations of horizontal observations are invalid. To create greater awareness of this problem, dip vectors of horizontal observations are represented as [-9999,-9999,-9999]. The code, reports and the spreadsheet are attached as separate files.
 
+![test_4](https://github.com/michalmichalak997/MLgeom/assets/28152295/dffd7160-4be2-47b2-b19f-899ad8b50509)
+
+Here, we can see that the triangle has only one finite neighbor. This finite neighbor is a horizontal triangle. Therefore, its dip vector has the following form:  [-9999,-9999,-9999].
 
 5. Visual inspection of collinearity
    
