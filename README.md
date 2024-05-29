@@ -35,6 +35,16 @@ To finish the fault detection framework, the user must calculate terrain attribu
 ## Software used.
 CGAL library v. 4.8.
 
+Microsoft Visual Studio 2022.
+
+### For running executables:
+The executables were run on a Windows virtual machine:
+Windows 10 Home, x64, Version: 22H2, OS build 19045.3803, RAM: 2048 MB. 
+
+Additionally, the following software is necessary: Microsoft  Visual C++ 2015-2022 Redistributable (x64) - 14.38.33135.
+
+In the directory with the executable, there should be the libgmp-10.dll file available. This file is attached in this repository.
+
 ## Installation. 
 The user has to install the CGAL library to run the attached computer codes specified in points 1 and 3. Newer versions of the CGAL library can be installed using the vcpkg manager (https://www.cgal.org/download/windows.html). However, since we use the 4.8 version, this option may not be available. Therefore, we suggest installing the CGAL (4.8) library using CMAKE GUI. While recommended, it is not mandatory to have QT installation completed to run the above programs.
 
