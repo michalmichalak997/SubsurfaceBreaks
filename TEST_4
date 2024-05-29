@@ -1,0 +1,745 @@
+//#include "C:/dev/CGAL-4.8/examples/Sample-Test1/pch.h"
+#include <fstream>
+#include <sstream>
+#include <string>
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/Projection_traits_xy_3.h>
+#include <CGAL/Delaunay_triangulation_2.h>
+#include <CGAL/Triangulation_2.h>
+#include <CGAL/Triangulation_vertex_base_with_info_2.h>
+#include <vector>
+#include <random>
+#include <CGAL/point_generators_2.h>
+#include <CGAL/Random.h>
+#include <CGAL/Polygon_2.h>
+#include <cstdlib> 
+#include <ctime>
+#include <assert.h>
+
+using namespace std;
+
+
+typedef CGAL::Exact_predicates_inexact_constructions_kernel            Kernel;
+typedef CGAL::Projection_traits_xy_3<Kernel> Gt;
+typedef CGAL::Triangulation_vertex_base_with_info_2< unsigned int, Gt > Vb;
+typedef CGAL::Triangulation_data_structure_2<Vb>                       Tds;
+typedef CGAL::Delaunay_triangulation_2<Gt, Tds>                    Delaunay;
+typedef CGAL::Polygon_2<Kernel>                                     Polygon_2;
+
+typedef Kernel::Point_2                                                  Point_2;
+
+typedef Kernel::Iso_rectangle_2                                  Rectangle_2;
+typedef std::vector<Point_2>                                        Container;
+typedef CGAL::Random_points_in_square_2<Point_2>                  Point_i_generator;
+typedef CGAL::Random_points_on_square_2<Point_2>                  Point_o_generator;
+
+typedef Kernel::Point_3                                                Point;
+
+const int n = 3; //we work in 3D
+vector <double> z_axis = { 0,0,1 };   //the definition of the z-axis
+double converter = 180 / M_PI; // converts radians to angles and vice versa
+
+class plane //a class that stores the crucial figures in terms of computing the orientation
+{
+
+private:
+	Point first_point;            //the first point of a triangle
+	Point second_point;            //the second point of a triangle
+	Point third_point;            //the third_point of a triangle
+
+	vector <double> first_vec;            //the first edge of a triangle
+	vector <double> second_vec;			//the second edge of a triangle
+	vector <double> third_vec;			//the third edge of a triangle
+	vector <double> normal_vec;			//normal vector of a triangle
+	vector <double> directional;			//the projection of the normal vector onto the horizontal plane
+	//vector <double> z_axis = { 0,0,1 };   //the definition of the z-axis
+	vector <double> dip_vec;
+	double doc;						//a variable that contains the collinearity coefficient
+	bool lin_dependence;		    //a bool variable to check to answer whether points are (too) collinear
+	string dip_degrees;             //a text variable to store the dip angle
+	string azimuth_degrees;         //a text variable to store the dip direction
+
+public:
+	static const int n = 3;			//the dimension of vectors
+	const double ex = 2;			//we introduce the restriction of collinearity - it should be between 0 and 1 to actually work
+	
+	double dip_azimuth(vector<double> normal, int n = 2) //a function that computes the dip azimuth
+	{
+		double angle = atan2(normal[1], normal[0]);
+		angle = angle * converter;
+		if (angle < 0)
+		{
+			return angle + 360;
+		}
+		else
+		{
+			return angle;
+		}
+	}
+
+	
+
+	double dip_angle( vector<double>z_axis, vector<double> normal_v) //function that computes the dip angle
+	{
+		double numerator = dot_product(z_axis, normal_v);
+		if (numerator >= 1.0) {
+			return 0;
+		}
+		else {
+			return acos(numerator) * converter;
+		}
+	}
+
+	static double dot_product(vector<double> vector_1, vector<double> vector_2, int n = 3) //function that computes the dot product of vectors
+	{
+		double product = 0;
+		for (int i = 0; i < n; i++)
+		{
+			product += vector_1[i] * vector_2[i];
+		}
+		return product;
+	}
+
+	bool dependence(vector<double> v1, vector<double> v2, vector<double> v3) //function that checks whether the points are collinear
+	{
+		double len_v1 = length(v1);
+		double len_v2 = length(v2);
+		double len_v3 = length(v3);
+		double lengths[n] = { len_v1, len_v2, len_v3 };
+
+		sort(lengths, lengths + n);
+		this->doc = lengths[2] / (lengths[0] + lengths[1]);
+		int k = 0;
+		for (int i = 0; i < n; i++)
+		{
+			if (lengths[i] == 0)
+			{
+				k += 1;
+			}
+		}
+		if (k != 0)
+		{
+			return true;
+		}
+		else
+		{
+			if (doc > ex)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+
+	static double length(vector<double> line_vector, int n = 3) //function that computes the length of a vector
+	{
+		double vector_length = sqrt(pow(line_vector[0], 2) + pow(line_vector[1], 2) + pow(line_vector[2], 2));
+		return vector_length;
+	}
+
+	vector <string> center() //function that computes the geometrical centre of a triangle, usuwane
+	{
+		double x = (first_point.x() + second_point.x() + third_point.x()) / (3.0);
+		double y = (first_point.y() + second_point.y() + third_point.y()) / (3.0);
+		double z = (first_point.z() + second_point.z() + third_point.z()) / (3.0);
+		vector<string> napis{ to_string(x), to_string(y), to_string(z) };
+		return napis;
+	}
+
+	plane(Point point_1, Point point_2, Point point_3) //the class constructor
+	{
+
+		this->first_point = Point(point_1.x(), point_1.y(), point_1.z());
+		this->second_point = Point(point_2.x(), point_2.y(), point_2.z());
+		this->third_point = Point(point_3.x(), point_3.y(), point_3.z());
+
+		vector<double>  first_try = { point_2.x() - point_1.x(), point_2.y() - point_1.y(), point_2.z() - point_1.z() };
+		vector<double>  second_try = { point_3.x() - point_1.x(), point_3.y() - point_1.y(), point_3.z() - point_1.z() };
+		vector<double>  third_try = { point_3.x() - point_2.x(), point_3.y() - point_2.y(), point_3.z() - point_2.z() };
+
+		bool test = dependence(first_try, second_try, third_try);
+		if (test == true)
+		{
+			lin_dependence = true;
+			this->first_vec = { -99,-99,-99 };
+			this->second_vec = { -99,-99,-99 };
+			this->third_vec = {-99,-99,-99};
+			this->normal_vec = { -99,-99,-99 };
+			this->dip_vec = { -99, -99, -99 };
+			measure();
+		}
+		else
+		{
+			lin_dependence = false;
+			for (int i = 0; i < n; i++)
+			{
+				this->first_vec.push_back(first_try[i]);
+				this->second_vec.push_back(second_try[i]);
+				this->third_vec.push_back(third_try[i]);
+			}
+			normal_vec.push_back(first_vec[1] * second_vec[2] - second_vec[1] * first_vec[2]);
+			normal_vec.push_back(first_vec[2] * second_vec[0] - second_vec[2] * first_vec[0]);
+			normal_vec.push_back(first_vec[0] * second_vec[1] - second_vec[0] * first_vec[1]);
+
+			if (normal_vec[2] < 0) {
+				normal_vec[0] *= -1;
+				normal_vec[1] *= -1;
+				normal_vec[2] *= -1;
+			}
+
+			double normal_length = length(normal_vec);
+			normal_vec[0] = normal_vec[0] / normal_length;
+			normal_vec[1] = normal_vec[1] / normal_length;
+			normal_vec[2] = normal_vec[2] / normal_length;
+
+			if (normal_vec[2] == 1) {
+				dip_vec.push_back(-9999);
+				dip_vec.push_back(-9999);
+				dip_vec.push_back(-9999);
+			}
+			else {
+			dip_vec.push_back(cos(dip_angle(z_axis, normal_vec) / converter) * cos(dip_azimuth(normal_vec) / converter));
+			dip_vec.push_back(cos(dip_angle(z_axis, normal_vec) / converter) * sin(dip_azimuth(normal_vec) / converter));
+			dip_vec.push_back(-sin(dip_angle(z_axis, normal_vec) / converter));
+			}
+			
+
+			measure(); //setting dip_degrees and azimuth_degrees
+		}
+	}
+	
+
+	void measure()//function that supplies orientation results also for singularities
+	{
+		if (lin_dependence) // result for collinear points
+		{
+			this->azimuth_degrees = ("LT");
+			this->dip_degrees = ("LT");
+		//	return (dip_degrees + ";" + azimuth_degrees);
+		}
+		else if (normal_vec[0] == 0 && normal_vec[1] == 0 && normal_vec[2] != 0) //result for a horizontal triangle
+		{
+			this->dip_degrees = "0";
+			this->azimuth_degrees = ("x");
+		//	return (dip_degrees + ";" + azimuth_degrees);
+		}
+		else if (normal_vec[2] == 0) //result for a vertical triangle
+		{
+			this->dip_degrees = "90";
+			this->azimuth_degrees = to_string(dip_azimuth(normal_vec));
+		//	return dip_degrees + ";" + azimuth_degrees;
+		}
+		else //a normal case (no singularities)
+		{
+			double dipping_angle = dip_angle(z_axis, normal_vec);
+			this->dip_degrees = to_string(dipping_angle);
+			this->azimuth_degrees = to_string(dip_azimuth(normal_vec));
+		//	return dip_degrees + ";" + azimuth_degrees;
+		}
+	}
+
+
+	string get_dip_angle() {
+
+		return this->dip_degrees;
+	}
+
+	string get_azimuth() {
+
+		return this->azimuth_degrees;
+	}
+
+	vector<double> get_normal() //function that -computes- returns the normal vector
+	{
+		vector<double> normal_vector = { this->normal_vec[0] ,this->normal_vec[1], this->normal_vec[2] };
+
+		return normal_vector;
+	}
+
+	double get_doc()
+	{
+		return this->doc;
+	}
+
+	Point get_first_point()
+	{
+		return this->first_point;
+	}
+
+	Point get_second_point()
+	{
+		return this->second_point;
+	}
+
+	Point get_third_point()
+	{
+		return this->third_point;
+	}
+
+	vector<double> get_first_vec() 
+	{
+		return this->first_vec;
+	}
+
+	vector<double> get_second_vec()
+	{
+		return this->second_vec;
+	}
+	vector<double> get_third_vec()
+	{
+		return this->third_vec;
+	}
+
+	vector<double> get_directional()
+	{
+		return this->directional;
+	}
+
+	vector<double> get_dip() {
+
+		vector<double> dip_vector = { dip_vec[0],dip_vec[1] ,dip_vec[2] };
+		return(dip_vector);
+	}
+	
+	bool get_lin_dependence() {
+
+		return this->lin_dependence;
+	}
+
+};
+
+
+
+
+double angle_between_normals(plane plane1, plane plane2) { //a function to calculate angles between a given triangle and neighbor triangles
+
+	double numerator = plane::dot_product(plane1.get_normal(), plane2.get_normal());
+	
+	if (numerator <= -1.0) {
+		return 180;
+	}
+	else if (numerator >= 1.0) {
+		return 0;
+	}
+	else {
+		return acos(numerator) * converter;
+	}
+
+}
+
+double euclidean_between_normals(plane plane1, plane plane2) { //a function to calculate angles between a given triangle and neighbor triangles
+
+	vector<double>first_dip = plane1.get_normal();
+	vector<double>second_dip = plane2.get_normal(); 
+	return sqrt(pow(first_dip[0] - second_dip[0], 2) + pow(first_dip[1] - second_dip[1], 2) + pow(first_dip[2] - second_dip[2], 2));
+}
+
+double cosine_distance_between_normals(plane plane1, plane plane2) { //a function to calculate angles between a given triangle and neighbor triangles
+
+	double numerator = plane::dot_product(plane1.get_normal(), plane2.get_normal());
+	if (numerator <= -1.0) {
+		return 2;
+	}
+	else if (numerator >= 1.0) {
+		return 0;
+	}
+	else {
+		return 1 - numerator;
+	}
+}
+
+double angle_between_dips(plane plane1, plane plane2) { //a function to calculate angles between a given triangle and neighbor triangles
+
+	double numerator = plane::dot_product(plane1.get_dip(), plane2.get_dip());
+
+	if (numerator <= -1.0) {
+		return 180;
+	}
+	else if (numerator >= 1.0) {
+		return 0;
+	}
+	else {
+		return acos(numerator) * converter;
+	}
+}
+
+double euclidean_between_dip_vectors(plane plane1, plane plane2) { //a function to calculate angles between a given triangle and neighbor triangles
+
+	vector<double>first_dip = plane1.get_dip();
+	vector<double>second_dip = plane2.get_dip();
+	return sqrt(pow(first_dip[0] - second_dip[0], 2) + pow(first_dip[1] - second_dip[1], 2) + pow(first_dip[2] - second_dip[2], 2));
+}
+
+double cosine_distance_between_dips(plane plane1, plane plane2) { //a function to calculate angles between a given triangle and neighbor triangles
+
+	double numerator = plane::dot_product(plane1.get_dip(), plane2.get_dip());
+	if (numerator <= -1.0) {
+		return 2;
+	}
+	else if (numerator >= 1.0) {
+		return 0;
+	}
+	else {
+		return 1 - numerator;
+	}
+}
+
+
+int main()
+{
+	
+		vector< std::pair<Point, unsigned> > points; //vector for storing boreholes/points
+
+		auto p1 = std::make_pair(Point(0, 1, 0),   1);
+		auto p2 = std::make_pair(Point(1, 1, -1),  2);
+		auto p3 = std::make_pair(Point(1, 0, 0),   3);
+		auto p4 = std::make_pair(Point(1, -1, -1), 4);
+		auto p5 = std::make_pair(Point(0, -1, -0), 5);
+		auto p6 = std::make_pair(Point(-1, 0, 1),  6);
+
+
+		points.push_back(p1);
+		points.push_back(p2);
+		points.push_back(p3);
+		points.push_back(p4);
+		points.push_back(p5);
+		points.push_back(p6);
+		
+		Delaunay dt;
+
+		dt.insert(points.begin(), points.end());
+
+
+		vector <plane> planes; //a vector variable storing planes representing the second surface
+		std::pair<Point, int> point_1; //we have a pair with point and index of the point
+		std::pair<Point, int> point_2;
+		std::pair<Point, int> point_3;
+
+		Point n1_point_1; //three coordinates: XYZ of neighbors
+		Point n1_point_2;
+		Point n1_point_3;
+
+		Point n2_point_1;
+		Point n2_point_2;
+		Point n2_point_3;
+
+		Point n3_point_1;
+		Point n3_point_2;
+		Point n3_point_3;
+
+
+		for (Delaunay::Finite_faces_iterator fit = dt.finite_faces_begin(); fit != dt.finite_faces_end(); ++fit) //a loop for performing the Delaunay triangulation and save the results
+
+		{
+			
+			Delaunay::Face_handle face = fit;
+			point_1 = make_pair(Point(dt.triangle(face)[0][0], dt.triangle(face)[0][1], dt.triangle(face)[0][2]), face->vertex(0)->info());
+			cout << "p1:  " <<  point_1.first << ".  ind: " << point_1.second << endl;
+			point_2 = make_pair(Point(dt.triangle(face)[1][0], dt.triangle(face)[1][1], dt.triangle(face)[1][2]), face->vertex(1)->info());
+			cout << "p2:  " << point_2.first << ".  ind: " << point_2.second << endl;
+			point_3 = make_pair(Point(dt.triangle(face)[2][0], dt.triangle(face)[2][1], dt.triangle(face)[2][2]), face->vertex(2)->info());
+			cout << "p3:  " << point_3.first << ".  ind: " << point_3.second << endl << endl;
+
+
+			try {
+				planes.push_back(plane(point_1.first, point_2.first, point_3.first));
+			}
+			catch (exception e) {
+
+				cout << e.what() << endl;
+			}
+
+			Point_2 t1(dt.triangle(face)[0][0], //extracting coordinates of points building a Delaunay triangle
+				dt.triangle(face)[0][1]);
+
+			Point_2 t2(dt.triangle(face)[1][0],
+				dt.triangle(face)[1][1]);
+
+			Point_2 t3(dt.triangle(face)[2][0],
+				dt.triangle(face)[2][1]);
+
+			plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment
+			//string result = current_plane.measure();								//extracting the dip angle and the dip direction
+			vector<string> centroid = current_plane.center();		//extracting the centroid of a Delaunay triangle
+			cout << "Dip angle: " << current_plane.get_dip_angle() << endl;
+			cout << "Dip direction: " << current_plane.get_azimuth() << endl;
+			double x_n = current_plane.get_normal()[0]; //extracting coordinates of the normal vector of a planar Delaunay triangle
+			double y_n = current_plane.get_normal()[1];
+			double z_n = current_plane.get_normal()[2];
+
+			cout << "Normal vector: " << x_n << " " << y_n << " " << z_n << endl;
+ 
+
+			double x_d = current_plane.get_dip()[0]; //extracting coordinates of the dip vector of a planar Delaunay triangle
+			double y_d = current_plane.get_dip()[1];
+			double z_d = current_plane.get_dip()[2];
+
+			cout << "Dip vector: " << x_d << " " << y_d << " " << z_d << endl;
+
+			//Normal vectors of neighbors
+
+			double n1_x_n; //extracting coordinates of the normal vector of a planar Delaunay triangle
+			double n1_y_n;
+			double n1_z_n;
+
+			double n2_x_n;//extracting coordinates of the normal vector of a planar Delaunay triangle
+			double n2_y_n;
+			double n2_z_n;
+
+			double n3_x_n; //extracting coordinates of the normal vector of a planar Delaunay triangle
+			double n3_y_n;
+			double n3_z_n;
+
+			//Dip vectors of neighbors
+			double d1_x_d; //extracting coordinates of the dip vector of a planar Delaunay triangle
+			double d1_y_d;
+			double d1_z_d;
+
+			double d2_x_d;//extracting coordinates of the dip vector of a planar Delaunay triangle
+			double d2_y_d;
+			double d2_z_d;
+
+			double d3_x_d; //extracting coordinates of the dip vector of a planar Delaunay triangle
+			double d3_y_d;
+			double d3_z_d;
+
+
+			//1st neighbor
+			double n_euclidean1 = -9999;
+			double n_angle1 = -9999;
+			double n_cos1 = -9999;
+			double d_euclidean1 = -9999;
+			double d_angle1 = -9999;
+			double d_cos1 = -9999;
+			vector<string> centroid_n1;
+
+			if (dt.is_infinite(face->neighbor(0)) == true) {
+
+
+				n1_x_n = -9999; //fake coordinates for normal vectors of the infinite neighbor
+				n1_y_n = -9999;
+				n1_z_n = -9999;
+				d1_x_d = -9999; //fake coordinates for dip vectors of the infinite neighbor
+				d1_y_d = -9999;
+				d1_z_d = -9999;
+				centroid_n1.push_back("undefined");
+				centroid_n1.push_back("undefined");
+				centroid_n1.push_back("undefined");
+				//n_euclidean1, n_angle1, n_cos1, n_euclidean1, d_angle1, d_cos1 = -9999;
+			}
+			else {
+				n1_point_1 = Point(dt.triangle(face->neighbor(0))[0][0], dt.triangle(face->neighbor(0))[0][1], dt.triangle(face->neighbor(0))[0][2]);
+				n1_point_2 = Point(dt.triangle(face->neighbor(0))[1][0], dt.triangle(face->neighbor(0))[1][1], dt.triangle(face->neighbor(0))[1][2]);
+				n1_point_3 = Point(dt.triangle(face->neighbor(0))[2][0], dt.triangle(face->neighbor(0))[2][1], dt.triangle(face->neighbor(0))[2][2]);
+			
+				cout << "Neighbor 1 - p1:  " << n1_point_1 << endl;
+				cout << "Neighbor 1 - p2:  " << n1_point_2 << endl;
+				cout << "Neighbor 1 - p3:  " << n1_point_3 << endl;
+				plane neighbor1_plane = plane(n1_point_1, n1_point_2, n1_point_3);
+				cout << "Dip angle: " << neighbor1_plane.get_dip_angle() << endl;
+				cout << "Dip direction: " << neighbor1_plane.get_azimuth() << endl;
+				n1_x_n = neighbor1_plane.get_normal()[0];// / plane::length(neighbor1_plane.get_normal()); //extracting coordinates of the normal vector of a planar Delaunay triangle
+				n1_y_n = neighbor1_plane.get_normal()[1]; /// plane::length(neighbor1_plane.get_normal());
+				n1_z_n = neighbor1_plane.get_normal()[2]; /// plane::length(neighbor1_plane.get_normal());
+				assert(n1_z_n>=0);
+				cout << "Neighbor 1 - nx:  " << n1_x_n << endl;
+				cout << "Neighbor 1 - ny:  " << n1_y_n << endl;
+				cout << "Neighbor 1 - nz:  " << n1_z_n << endl;
+				d1_x_d = neighbor1_plane.get_dip()[0]; // plane::length(neighbor1_plane.get_dip()); //fake coordinates for dip vectors of the infinite neighbor
+				d1_y_d = neighbor1_plane.get_dip()[1]; // plane::length(neighbor1_plane.get_dip());
+				d1_z_d = neighbor1_plane.get_dip()[2]; // plane::length(neighbor1_plane.get_dip());
+				cout << "Neighbor 1 - dx:  " << d1_x_d << endl;
+				cout << "Neighbor 1 - dy:  " << d1_y_d << endl;
+				cout << "Neighbor 1 - dz:  " << d1_z_d << endl;
+
+
+
+				assert(d1_z_d <= 0);
+
+				centroid_n1 = neighbor1_plane.center();
+
+
+				n_euclidean1 = euclidean_between_normals(current_plane, neighbor1_plane);
+				n_angle1 = angle_between_normals(current_plane, neighbor1_plane);
+				n_cos1 = cosine_distance_between_normals(current_plane, neighbor1_plane);
+				d_euclidean1 = euclidean_between_dip_vectors(current_plane, neighbor1_plane);
+				d_angle1 = angle_between_dips(current_plane, neighbor1_plane);
+				d_cos1 = cosine_distance_between_dips(current_plane, neighbor1_plane);
+
+				cout << "Neighbor 1 - normal Euclidean:  " << n_euclidean1 << endl;
+				cout << "Neighbor 1 - normal angle:  " << n_angle1 << endl;
+				cout << "Neighbor 1 - normal cosine:  " << n_cos1 << endl;
+				cout << "Neighbor 1 - dips Euclidean:  " << d_euclidean1 << endl;
+				cout << "Neighbor 1 - dips angle:  " << d_angle1 << endl;
+				cout << "Neighbor 1 - dips cosine:  " << d_cos1 << endl << endl;
+			}
+
+
+			//2nd neighbor
+			double n_euclidean2 = -9999;
+			double n_angle2 = -9999;
+			double n_cos2 = -9999;
+			double d_euclidean2 = -9999;
+			double d_angle2 = -9999;
+			double d_cos2 = -9999;
+			vector<string> centroid_n2;
+
+
+			if (dt.is_infinite(face->neighbor(1)) == true) {
+
+
+				n2_x_n = -9999; //fake coordinates for normal vectors of the infinite neighbor
+				n2_y_n = -9999;
+				n2_z_n = -9999;
+
+
+				d2_x_d = -9999; //fake coordinates for dip vectors of the infinite neighbor
+				d2_y_d = -9999;
+				d2_z_d = -9999;
+				centroid_n2.push_back("undefined");
+				centroid_n2.push_back("undefined");
+				centroid_n2.push_back("undefined");
+				//n_euclidean2, n_angle2, n_cos2, n_euclidean2, d_angle2, d_cos2= -9999;
+			}
+			else {
+				n2_point_1 = Point(dt.triangle(face->neighbor(1))[0][0], dt.triangle(face->neighbor(1))[0][1], dt.triangle(face->neighbor(1))[0][2]);
+				n2_point_2 = Point(dt.triangle(face->neighbor(1))[1][0], dt.triangle(face->neighbor(1))[1][1], dt.triangle(face->neighbor(1))[1][2]);
+				n2_point_3 = Point(dt.triangle(face->neighbor(1))[2][0], dt.triangle(face->neighbor(1))[2][1], dt.triangle(face->neighbor(1))[2][2]);
+
+				cout << "Neighbor 2 - p1:  " << n2_point_1 << endl;
+				cout << "Neighbor 2 - p2:  " << n2_point_2 << endl;
+				cout << "Neighbor 2 - p3:  " << n2_point_3 << endl;
+
+				plane neighbor2_plane = plane(n2_point_1, n2_point_2, n2_point_3);
+				cout << "Dip angle: " << neighbor2_plane.get_dip_angle() << endl;
+				cout << "Dip direction: " << neighbor2_plane.get_azimuth() << endl;
+				n2_x_n = neighbor2_plane.get_normal()[0]; // plane::length(neighbor2_plane.get_normal()); //extracting coordinates of the normal vector of a planar Delaunay triangle
+				n2_y_n = neighbor2_plane.get_normal()[1]; // plane::length(neighbor2_plane.get_normal());
+				n2_z_n = neighbor2_plane.get_normal()[2]; // plane::length(neighbor2_plane.get_normal());
+				assert(n2_z_n >= 0);
+				cout << "Neighbor 2 - nx:  " << n2_x_n << endl;
+				cout << "Neighbor 2 - ny:  " << n2_y_n << endl;
+				cout << "Neighbor 2 - nz:  " << n2_z_n << endl;
+
+				d2_x_d = neighbor2_plane.get_dip()[0]; // plane::length(neighbor2_plane.get_dip()); //fake coordinates for dip vectors of the infinite neighbor
+				d2_y_d = neighbor2_plane.get_dip()[1]; // plane::length(neighbor2_plane.get_dip());
+				d2_z_d = neighbor2_plane.get_dip()[2]; // plane::length(neighbor2_plane.get_dip());
+
+				cout << "Neighbor 2 - dx:  " << d2_x_d << endl;
+				cout << "Neighbor 2 - dy:  " << d2_y_d << endl;
+				cout << "Neighbor 2 - dz:  " << d2_z_d << endl;
+
+				assert(d2_z_d <= 0);
+
+				centroid_n2 = neighbor2_plane.center();
+
+
+				n_euclidean2 = euclidean_between_normals(current_plane, neighbor2_plane);
+				n_angle2 = angle_between_normals(current_plane, neighbor2_plane);
+				n_cos2 = cosine_distance_between_normals(current_plane, neighbor2_plane);
+				d_euclidean2 = euclidean_between_dip_vectors(current_plane, neighbor2_plane);
+				d_angle2 = angle_between_dips(current_plane, neighbor2_plane);
+				d_cos2 = cosine_distance_between_dips(current_plane, neighbor2_plane);
+
+
+				cout << "Neighbor 2 - normal Euclidean:  " << n_euclidean2 << endl;
+				cout << "Neighbor 2 - normal angle:  " << n_angle2 << endl;
+				cout << "Neighbor 2 - normal cosine:  " << n_cos2 << endl;
+				cout << "Neighbor 2 - dips Euclidean:  " << d_euclidean2 << endl;
+				cout << "Neighbor 2 - dips angle:  " << d_angle2 << endl;
+				cout << "Neighbor 2 - dips cosine:  " << d_cos2 << endl << endl;
+			}
+
+
+			//3 neighbor
+
+			double n_euclidean3 = -9999;
+			double n_angle3 = -9999;
+			double n_cos3 = -9999;
+			double d_euclidean3 = -9999;
+			double d_angle3 = -9999;
+			double  d_cos3 = -9999;
+			vector<string> centroid_n3;
+
+
+			if (dt.is_infinite(face->neighbor(2)) == true) {
+
+				n3_x_n = -9999; //fake coordinates for normal vectors of the infinite neighbor
+				n3_y_n = -9999;
+				n3_z_n = -9999;
+
+				d3_x_d = -9999; //fake coordinates for dip vectors of the infinite neighbor
+				d3_y_d = -9999;
+				d3_z_d = -9999;
+
+				centroid_n3.push_back("undefined");
+				centroid_n3.push_back("undefined");
+				centroid_n3.push_back("undefined");
+
+			}
+			else {
+				n3_point_1 = Point(dt.triangle(face->neighbor(2))[0][0], dt.triangle(face->neighbor(2))[0][1], dt.triangle(face->neighbor(2))[0][2]);
+				n3_point_2 = Point(dt.triangle(face->neighbor(2))[1][0], dt.triangle(face->neighbor(2))[1][1], dt.triangle(face->neighbor(2))[1][2]);
+				n3_point_3 = Point(dt.triangle(face->neighbor(2))[2][0], dt.triangle(face->neighbor(2))[2][1], dt.triangle(face->neighbor(2))[2][2]);
+
+				cout << "Neighbor 3 - p1:  " << n3_point_1 << endl;
+				cout << "Neighbor 3 - p2:  " << n3_point_2 << endl;
+				cout << "Neighbor 3 - p3:  " << n3_point_3 << endl;
+
+				plane neighbor3_plane = plane(n3_point_1, n3_point_2, n3_point_3);
+				cout << "Dip angle: " << neighbor3_plane.get_dip_angle() << endl;
+				cout << "Dip direction: " << neighbor3_plane.get_azimuth() << endl;
+			
+				n3_x_n = neighbor3_plane.get_normal()[0]; // plane::length(neighbor3_plane.get_normal()); //extracting coordinates of the normal vector of a planar Delaunay triangle
+				n3_y_n = neighbor3_plane.get_normal()[1]; // plane::length(neighbor3_plane.get_normal());
+				n3_z_n = neighbor3_plane.get_normal()[2]; /// plane::length(neighbor3_plane.get_normal());
+
+				cout << "Neighbor 3 - nx:  " << n3_x_n << endl;
+				cout << "Neighbor 3 - ny:  " << n3_y_n << endl;
+				cout << "Neighbor 3 - nz:  " << n3_z_n << endl;
+
+
+				assert(n3_z_n >= 0);
+
+
+				centroid_n3 = neighbor3_plane.center();
+
+
+				d3_x_d = neighbor3_plane.get_dip()[0]; // plane::length(neighbor3_plane.get_dip()); //fake coordinates for dip vectors of the infinite neighbor
+				d3_y_d = neighbor3_plane.get_dip()[1]; // plane::length(neighbor3_plane.get_dip());
+				d3_z_d = neighbor3_plane.get_dip()[2]; // plane::length(neighbor3_plane.get_dip());
+
+				cout << "Neighbor 3 - dx:  " << d3_x_d << endl;
+				cout << "Neighbor 3 - dy:  " << d3_y_d << endl;
+				cout << "Neighbor 3 - dz:  " << d3_z_d << endl;
+
+				assert(d3_z_d <= 0);
+
+				n_euclidean3 = euclidean_between_normals(current_plane, neighbor3_plane);
+				n_angle3 = angle_between_normals(current_plane, neighbor3_plane);
+				n_cos3 = cosine_distance_between_normals(current_plane, neighbor3_plane);
+				d_euclidean3 = euclidean_between_dip_vectors(current_plane, neighbor3_plane);
+				d_angle3 = angle_between_dips(current_plane, neighbor3_plane);
+				d_cos3 = cosine_distance_between_dips(current_plane, neighbor3_plane);
+
+				cout << "Neighbor 3 - normal Euclidean:  " << n_euclidean3 << endl;
+				cout << "Neighbor 3 - normal angle:  " << n_angle3 << endl;
+				cout << "Neighbor 3 - normal cosine:  " << n_cos3 << endl;
+				cout << "Neighbor 3 - dips Euclidean:  " << d_euclidean3 << endl;
+				cout << "Neighbor 3 - dips angle:  " << d_angle3 << endl;
+				cout << "Neighbor 3 - dips cosine:  " << d_cos3 << endl << endl;
+
+				
+			}
+
+			cout << " The end of finite neighbors" << endl << endl;
+		}
+
+	system("pause");
+	return 0;
+}
