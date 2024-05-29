@@ -64,7 +64,10 @@ Here, we can see that the differences for cosine distance between C++ and R are 
 
 Here, we can see that the differences for angular distance are greater, probably due to different implementations of acos() function between C++ and R.
 
-4. Visual inspection of collinearity
+4. Calculation of distances between a triangle and its neighbors. We prepared 6 data points resulting in a triangulation 4 faces. We compared the results with those obtained in a spreadsheet. We didn't obtain any serious issues with the results. We note that the dip vector representation is not applicable for horizontal observations because the dip vector is not uniquely defined. Therefore, distances calculated for dip-vector-representations of horizontal observations are invalid. To create greater awareness of this problem, dip vectors of horizontal observations are represented ad [-9999,-9999,-9999]. The code, reports and the spreadsheet are attached as separate files.
+
+
+5. Visual inspection of collinearity
    
 ![collinearity](https://github.com/michalmichalak997/MLgeom/assets/28152295/8b58fb5b-8045-4e06-82b7-c39590f2f43f)
 
