@@ -65,9 +65,16 @@ Here, we can see that the differences for angular distance are greater, probably
 
 4. Calculation of distances between a triangle and its neighbors. We prepared 6 data points resulting in a triangulation 4 faces. We compared the results with those obtained in a spreadsheet. We didn't obtain any serious issues with the results. We note that the dip vector representation is not applicable for horizontal observations because the dip vector is not uniquely defined. Therefore, distances calculated for dip-vector-representations of horizontal observations are invalid. To create greater awareness of this problem, dip vectors of horizontal observations are represented as [-9999,-9999,-9999]. The code, reports and the spreadsheet are attached as separate files.
 
+![test_4-points](https://github.com/michalmichalak997/MLgeom/assets/28152295/66db07ce-5571-417e-9447-95f6ddb398af)
+
+A sketch of the distribution of the data points. In the central part, there is a triangle which is the only triangle having more than one finite neighbor.
+
+
 ![test_4](https://github.com/michalmichalak997/MLgeom/assets/28152295/dffd7160-4be2-47b2-b19f-899ad8b50509)
 
 Here, we can see that the triangle has only one finite neighbor. This finite neighbor is a horizontal triangle. Therefore, its dip vector has the following form:  [-9999,-9999,-9999].
+
+
 
 5. Visual inspection of collinearity
    
