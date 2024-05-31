@@ -1,10 +1,10 @@
 # Broken terrains
 
-This software is intended to detect faults on homocline terrains. The software consists of two three programs:
+This software is intended to detect faults on homocline terrains. The software consists of three programs:
 
-1. Generating labelled synthetic terrains based on random parameters with bounds introduced by a user.
-2. Detecting faults for synthetic terrains using Support Vector Machine algorithm.
-3. Detecting faults for real terrains with calculated attributes.
+1. Generating labelled synthetic terrains based on random parameters with bounds introduced by a user (C++).
+2. Detecting faults for synthetic terrains using Support Vector Machine algorithm (Python).
+3. Detecting faults for real terrains with calculated attributes (C++).
 
 We will now explain the components of the framework.
 
@@ -30,23 +30,23 @@ The above screenshot presents the key step in the data preparation for supervise
 
 ## ad. 3 Detecting faults for real terrains with calculated attributes.
 
-To finish the fault detection framework, the user must calculate terrain attributes for real data. The program from the first step cannot be used because it was intended to create synthetic terrains with labels. And our objective is now to use the fine-tuned program from step 2 to predict fault-related triangles for real data based on geometric attributes (orientation of normal/dip vectors with neighborhood analysis).
+To finish the fault detection pipeline, the user must calculate terrain attributes for real data. The program from the first step cannot be used because it was intended to create synthetic terrains with labels. And our objective is now to use the fine-tuned program from step 2 to predict fault-related triangles for real data based on geometric attributes (orientation of normal/dip vectors with neighborhood analysis).
 
 ## Software used.
-CGAL library v. 4.8.
 
+CGAL library v. 4.8.
+CMake (3.28.2)
 Microsoft Visual Studio 2022.
+Microsoft  Visual C++ 2015-2022 Redistributable (x64) - 14.38.33135.
 
 ### For running executables:
-The executables were run on a Windows virtual machine:
-Windows 10 Home, x64, Version: 22H2, OS build 19045.3803, RAM: 2048 MB. 
 
-Additionally, the following software is necessary: Microsoft  Visual C++ 2015-2022 Redistributable (x64) - 14.38.33135.
-
-In the directory with the executable, there should be the libgmp-10.dll file available. This file is attached in this repository.
+To allow portability of the programs, the C++ computer code can be compiled in Release mode to generate executables. 
+The executables were run on a Windows virtual machine: Windows 10 Home, x64, Version: 22H2, OS build 19045.3803, RAM: 2048 MB.  Additionally, the following software is necessary to run the executables: Microsoft  Visual C++ 2015-2022 Redistributable (x64) - 14.38.33135. In the directory with the executable, there should be the libgmp-10.dll file available. This file is attached in this repository.
 
 ## Installation. 
-The user has to install the CGAL library to run the attached computer codes specified in points 1 and 3. Newer versions of the CGAL library can be installed using the vcpkg manager (https://www.cgal.org/download/windows.html). However, since we use the 4.8 version, this option may not be available. Therefore, we suggest installing the CGAL (4.8) library using CMAKE GUI. While recommended, it is not mandatory to have QT installation completed to run the above programs.
+
+The user has to install the CGAL library to run the attached computer codes specified in points 1 and 3. Newer versions of the CGAL library can be installed using the vcpkg manager (https://www.cgal.org/download/windows.html). However, since we use the 4.8 version, this option may not be available. And we do not guarantee that the computer code will be correctly executed with newer versions of CGAL (>4.8). Therefore, the best solution would be to install the CGAL (4.8) library using CMake GUI (3.28.2). We note that to use the programs, it is not mandatory to have QT installation completed.
 
 ## Tests 
 
