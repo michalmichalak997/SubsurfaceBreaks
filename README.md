@@ -30,7 +30,7 @@ The above screenshot presents the key step in the data preparation for supervise
 
 ## ad. 3 Detecting faults for real terrains with calculated attributes.
 
-To finish the fault detection pipeline, the user must calculate terrain attributes for real data. The program from the first step cannot be used because it was intended to create synthetic terrains with labels. And our objective is now to use the fine-tuned program from step 2 to predict fault-related triangles for real data based on geometric attributes (orientation of normal/dip vectors with neighborhood analysis). Please use the Broken_real_terrains code to calculate attributes for your real data.
+To finish the fault detection pipeline, the user must calculate terrain attributes for real data. The program from the first step cannot be used because it was intended to create synthetic terrains with labels. And our objective is now to use the fine-tuned program from step 2 to predict fault-related triangles for real data based on geometric attributes (orientation of normal/dip vectors with neighborhood analysis). Please use the Broken_real_terrains code to calculate attributes for your real data. You will need to remove the first line "Index of the surface:0" from the "_output" file to proceed with the Python script.
 
 ## Software used.
 
