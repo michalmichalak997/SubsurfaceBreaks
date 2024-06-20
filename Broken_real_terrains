@@ -1,6 +1,3 @@
-//31.05.2024 - nie działa potem w pythonie - uskoki 12% - to jesr t kod do rzecz. tere.
-
-
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -22,9 +19,6 @@ typedef CGAL::Triangulation_vertex_base_with_info_2< std::pair<vector<double>, u
 typedef CGAL::Triangulation_data_structure_2<Vb>                       Tds;
 typedef CGAL::Delaunay_triangulation_2<Gt, Tds>                        Delaunay;
 typedef Kernel::Point_3                                                Point;
-//double converter = 180 / M_PI;
-//const int n = 3; //we work in 3D
-//double coord_coef;
 
 
 const int n = 3; //we work in 3D
@@ -44,7 +38,6 @@ private:
 	vector <double> third_vec;			//the third edge of a triangle
 	vector <double> normal_vec;			//normal vector of a triangle
 	vector <double> directional;			//the projection of the normal vector onto the horizontal plane
-	//vector <double> z_axis = { 0,0,1 };   //the definition of the z-axis
 	vector <double> dip_vec;
 	double doc;						//a variable that contains the collinearity coefficient
 	bool lin_dependence;		    //a bool variable to check to answer whether points are (too) collinear
@@ -209,26 +202,26 @@ public:
 		{
 			this->azimuth_degrees = ("LT");
 			this->dip_degrees = ("LT");
-			//	return (dip_degrees + ";" + azimuth_degrees);
+
 		}
 		else if (normal_vec[0] == 0 && normal_vec[1] == 0 && normal_vec[2] != 0) //result for a horizontal triangle
 		{
 			this->dip_degrees = "0";
 			this->azimuth_degrees = ("x");
-			//	return (dip_degrees + ";" + azimuth_degrees);
+			
 		}
 		else if (normal_vec[2] == 0) //result for a vertical triangle
 		{
 			this->dip_degrees = "90";
 			this->azimuth_degrees = to_string(dip_azimuth(normal_vec));
-			//	return dip_degrees + ";" + azimuth_degrees;
+		
 		}
 		else //a normal case (no singularities)
 		{
 			double dipping_angle = dip_angle(z_axis, normal_vec);
 			this->dip_degrees = to_string(dipping_angle);
 			this->azimuth_degrees = to_string(dip_azimuth(normal_vec));
-			//	return dip_degrees + ";" + azimuth_degrees;
+	
 		}
 	}
 
@@ -384,11 +377,6 @@ void save_delaunay_vtk(Delaunay dt, vector< std::pair<Point, std::pair<vector<do
 		}
 	}
 
-	/*	for (auto it = pts.begin(); it != pts.end(); it++)
-		{
-			delaunays << fixed << (it->first[2]) << "\n          ";
-		}
-	*/
 	delaunays << "\n        " <<
 		"</DataArray>" << "\n      " <<
 		"</PointData>" << "\n      " <<
@@ -413,12 +401,6 @@ void save_delaunay_vtk(Delaunay dt, vector< std::pair<Point, std::pair<vector<do
 		}
 	}
 
-	/*	for (auto it = pts.begin(); it != pts.end(); it++)
-	{
-		double x = (it->first[1]), y = (it->first[0]), z = (it->first[2]);
-		delaunays << fixed << x << " " << y << " " << z << "\n           ";
-	}
-	*/
 	delaunays << "\n        " <<
 		"</DataArray>" << "\n      " <<
 		"</Points>" << "\n      " <<
@@ -429,8 +411,6 @@ void save_delaunay_vtk(Delaunay dt, vector< std::pair<Point, std::pair<vector<do
 	{
 		Delaunay::Face_handle face = fit;
 		delaunays << face->vertex(0)->info().second - 1 << " " << face->vertex(1)->info().second - 1 << " " << face->vertex(2)->info().second - 1 << "\n          ";
-
-		//cout << face->vertex(0)->info() - 1 << " " << face->vertex(1)->info() - 1 << " " << face->vertex(2)->info() - 1 << "\n";
 	}
 
 	delaunays << "\n        " <<
@@ -516,8 +496,6 @@ void save_normals_vtk(Delaunay dt, vector< std::pair<Point, std::pair<vector<dou
 
 		}
 
-		//plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment
-		//vector<string> centroid = current_plane.center();		//extracting the centroid of a Delaunay triangle
 		normalvis << fixed << planes.at(plane_index).center()[2] << "\n          ";
 		plane_index++;
 	}
@@ -562,9 +540,6 @@ void save_normals_vtk(Delaunay dt, vector< std::pair<Point, std::pair<vector<dou
 
 		}
 
-		//plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment
-		//string result = current_plane.measure();								//extracting the dip angle and the dip direction
-		//vector <string> centroid = current_plane.center();
 
 		normalvis << fixed << planes.at(plane_index).center()[1] << " " << planes.at(plane_index).center()[0] << " " << planes.at(plane_index).center()[2] << "\n           ";
 		plane_index++;
@@ -639,22 +614,11 @@ void save_normals_vtk(Delaunay dt, vector< std::pair<Point, std::pair<vector<dou
 			}
 
 		}
-		//plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment
-		//string result = current_plane.measure();								//extracting the dip angle and the dip direction
-		//vector <string> centroid = current_plane.center();		//extracting the centroid of a Delaunay triangle
+		
 
 		normalvis << fixed << planes.at(plane_index).get_normal()[1] << " " << planes.at(plane_index).get_normal()[0] << " " << planes.at(plane_index).get_normal()[2] << "\n          ";
 		plane_index++;
-		//double x_n = current_plane.get_normal()[0]; //extracting coordinates of the normal vector of a planar Delaunay triangle
-		//double y_n = current_plane.get_normal()[1];
-		//double z_n = current_plane.get_normal()[2];
 
-		//vector<double> normal_vector_double = { x_n, y_n, z_n };
-		//x_n = x_n / plane::length(normal_vector_double);
-		//y_n = y_n / plane::length(normal_vector_double);
-		//z_n = z_n / plane::length(normal_vector_double);
-
-		//normalvis << fixed << y_n << " " << x_n << " " << z_n << "\n          ";
 	}
 	plane_index = 0;
 	normalvis <<
@@ -722,8 +686,7 @@ void save_dips_vtk(Delaunay dt, vector< std::pair<Point, std::pair<vector<double
 
 		}
 
-		//plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment
-		//vector<string> centroid = current_plane.center();		//extracting the centroid of a Delaunay triangle
+
 		normalvis << fixed << planes.at(plane_index).center()[2] << "\n          ";
 		plane_index++;
 	}
@@ -768,9 +731,6 @@ void save_dips_vtk(Delaunay dt, vector< std::pair<Point, std::pair<vector<double
 
 		}
 
-		//plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment
-		//string result = current_plane.measure();								//extracting the dip angle and the dip direction
-		//vector <string> centroid = current_plane.center();
 
 		normalvis << fixed << planes.at(plane_index).center()[1] << " " << planes.at(plane_index).center()[0] << " " << planes.at(plane_index).center()[2] << "\n           ";
 		plane_index++;
@@ -845,22 +805,10 @@ void save_dips_vtk(Delaunay dt, vector< std::pair<Point, std::pair<vector<double
 			}
 
 		}
-		//plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment
-		//string result = current_plane.measure();								//extracting the dip angle and the dip direction
-		//vector <string> centroid = current_plane.center();		//extracting the centroid of a Delaunay triangle
-
+	
 		normalvis << fixed << planes.at(plane_index).get_dip()[1] << " " << planes.at(plane_index).get_dip()[0] << " " << planes.at(plane_index).get_dip()[2] << "\n          ";
 		plane_index++;
-		//double x_n = current_plane.get_normal()[0]; //extracting coordinates of the normal vector of a planar Delaunay triangle
-		//double y_n = current_plane.get_normal()[1];
-		//double z_n = current_plane.get_normal()[2];
 
-		//vector<double> normal_vector_double = { x_n, y_n, z_n };
-		//x_n = x_n / plane::length(normal_vector_double);
-		//y_n = y_n / plane::length(normal_vector_double);
-		//z_n = z_n / plane::length(normal_vector_double);
-
-		//normalvis << fixed << y_n << " " << x_n << " " << z_n << "\n          ";
 	}
 	plane_index = 0;
 	normalvis <<
@@ -1050,17 +998,6 @@ int main()
 	if (pts.size() != dt.number_of_vertices()) { throw(runtime_error("Check for duplicates in data!")); }
 
 
-	// converts radians to angles and vice versa
-   //int number_of_files = 3;
-   //int i = 0;
-
-
-   //	string file_path = "C:\\testy\\scikit7\\";
-   //	file_path.append(to_string(i));
-	   //file_path.append(".txt");
-
-
-
 	for (auto i = 0; i < n_surfaces; i++)
 	{
 		int surface_index = i;
@@ -1147,26 +1084,6 @@ int main()
 
 			}
 
-			//plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment
-											//extracting the dip angle and the dip direction
-			//vector<string> centroid = current_plane.center();		//extracting the centroid of a Delaunay triangle
-
-			//double x_n = current_plane.get_normal()[0]; //extracting coordinates of the normal vector of a planar Delaunay triangle
-			//double y_n = current_plane.get_normal()[1];
-			//double z_n = current_plane.get_normal()[2];
-
-			//x_n = x_n / plane::length(current_plane.get_normal());
-			//y_n = y_n / plane::length(current_plane.get_normal());
-			//z_n = z_n / plane::length(current_plane.get_normal());
-
-			//double x_d = current_plane.get_dip()[0]; //extracting coordinates of the dip vector of a planar Delaunay triangle
-			//double y_d = current_plane.get_dip()[1];
-			//double z_d = current_plane.get_dip()[2];
-
-			//x_d = x_d / plane::length(current_plane.get_dip());
-			//y_d = y_d / plane::length(current_plane.get_dip());
-			//z_d = z_d / plane::length(current_plane.get_dip());
-
 			//Normal vectors of neighbors
 			//string result = planes.at(plane_index).measure();
 			double n1_x_n; //extracting coordinates of the normal vector of a planar Delaunay triangle
@@ -1216,7 +1133,6 @@ int main()
 				centroid_n1.push_back("undefined");
 				centroid_n1.push_back("undefined");
 				centroid_n1.push_back("undefined");
-				//n_euclidean1, n_angle1, n_cos1, n_euclidean1, d_angle1, d_cos1 = -9999;
 			}
 			else {
 				n1_point_1 = Point(dt.triangle(face->neighbor(0))[0][0], dt.triangle(face->neighbor(0))[0][1], dt.triangle(face->neighbor(0))[0][2]);
@@ -1274,7 +1190,6 @@ int main()
 				centroid_n2.push_back("undefined");
 				centroid_n2.push_back("undefined");
 				centroid_n2.push_back("undefined");
-				//n_euclidean2, n_angle2, n_cos2, n_euclidean2, d_angle2, d_cos2= -9999;
 			}
 			else {
 				n2_point_1 = Point(dt.triangle(face->neighbor(1))[0][0], dt.triangle(face->neighbor(1))[0][1], dt.triangle(face->neighbor(1))[0][2]);
@@ -1332,7 +1247,6 @@ int main()
 				centroid_n3.push_back("undefined");
 				centroid_n3.push_back("undefined");
 				centroid_n3.push_back("undefined");
-				//n_euclidean3, n_angle3, n_cos3, n_euclidean3, d_angle3, d_cos3 = -9999;
 			}
 			else {
 				n3_point_1 = Point(dt.triangle(face->neighbor(2))[0][0], dt.triangle(face->neighbor(2))[0][1], dt.triangle(face->neighbor(2))[0][2]);
@@ -1438,27 +1352,6 @@ int main()
 		save_dips_vtk(dt, pts, path_dips, surface_index);
 		save_locate(dt, pts, path_grid, resolution_step, surface_index);
 	}
-	//string path_del = "C:\\testy\\scikit7\\";
-	//path_del.append(to_string(i));
-	//VTK file for Dip vector
-	//the end of the big for loop
-
-	//point_1.clear();
-	//point_2.clear();
-	//point_3.clear();
-
-	//n1_point_1.clear();
-	//n1_point_2.clear();
-	//n1_point_3.clear();
-
-	//n2_point_1.clear();
-	//n2_point_2.clear();
-	//n2_point_3.clear();
-
-	//n3_point_1.clear();
-	//n3_point_2.clear();
-	//n3_point_3.clear();
-
 	system("pause");
 	return 0;
 }
