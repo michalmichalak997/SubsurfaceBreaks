@@ -1,4 +1,4 @@
-//#include "C:/dev/CGAL-4.8/examples/Sample-Test1/pch.h"
+
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -54,7 +54,6 @@ private:
 	vector <double> third_vec;			//the third edge of a triangle
 	vector <double> normal_vec;			//normal vector of a triangle
 	vector <double> directional;			//the projection of the normal vector onto the horizontal plane
-	//vector <double> z_axis = { 0,0,1 };   //the definition of the z-axis
 	vector <double> dip_vec;
 	double doc;						//a variable that contains the collinearity coefficient
 	bool lin_dependence;		    //a bool variable to check to answer whether points are (too) collinear
@@ -219,26 +218,24 @@ public:
 		{
 			this->azimuth_degrees = ("LT");
 			this->dip_degrees = ("LT");
-			//	return (dip_degrees + ";" + azimuth_degrees);
+			
 		}
 		else if (normal_vec[0] == 0 && normal_vec[1] == 0 && normal_vec[2] != 0) //result for a horizontal triangle
 		{
 			this->dip_degrees = "0";
 			this->azimuth_degrees = ("x");
-			//	return (dip_degrees + ";" + azimuth_degrees);
+
 		}
 		else if (normal_vec[2] == 0) //result for a vertical triangle
 		{
 			this->dip_degrees = "90";
 			this->azimuth_degrees = to_string(dip_azimuth(normal_vec));
-			//	return dip_degrees + ";" + azimuth_degrees;
 		}
 		else //a normal case (no singularities)
 		{
 			double dipping_angle = dip_angle(z_axis, normal_vec);
 			this->dip_degrees = to_string(dipping_angle);
 			this->azimuth_degrees = to_string(dip_azimuth(normal_vec));
-			//	return dip_degrees + ";" + azimuth_degrees;
 		}
 	}
 
@@ -404,8 +401,6 @@ void save_delaunay_vtk(Delaunay dt, vector< std::pair<Point, unsigned> > points_
 	{
 		Delaunay::Face_handle face = fit;
 		delaunays << face->vertex(0)->info() - 1 << " " << face->vertex(1)->info() - 1 << " " << face->vertex(2)->info() - 1 << "\n";
-
-		//cout << face->vertex(0)->info() - 1 << " " << face->vertex(1)->info() - 1 << " " << face->vertex(2)->info() - 1 << "\n";
 	}
 
 	delaunays << "\n        " <<
@@ -534,8 +529,7 @@ void save_normals_vtk(Delaunay dt, vector< std::pair<Point, unsigned> > points_b
 		point_2 = make_pair(Point(dt.triangle(face)[1][0], dt.triangle(face)[1][1], dt.triangle(face)[1][2]), face->vertex(1)->info());
 		point_3 = make_pair(Point(dt.triangle(face)[2][0], dt.triangle(face)[2][1], dt.triangle(face)[2][2]), face->vertex(2)->info());
 
-		plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment
-		//string result = current_plane.measure();								//extracting the dip angle and the dip direction
+		plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment							//extracting the dip angle and the dip direction
 		vector <string> centroid = current_plane.center();		//extracting the centroid of a Delaunay triangle
 
 		double x_n = current_plane.get_normal()[0]; //extracting coordinates of the normal vector of a planar Delaunay triangle
@@ -603,7 +597,6 @@ void save_dips_vtk(Delaunay dt, vector< std::pair<Point, unsigned> > points_b_in
 		point_3 = make_pair(Point(dt.triangle(face)[2][0], dt.triangle(face)[2][1], dt.triangle(face)[2][2]), face->vertex(2)->info());
 
 		plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment
-		//string result = current_plane.measure();								//extracting the dip angle and the dip direction
 		vector <string> centroid = current_plane.center();
 
 		dipsvis << fixed << centroid[1] << " " << centroid[0] << " " << centroid[2] << "\n           ";
@@ -656,7 +649,6 @@ void save_dips_vtk(Delaunay dt, vector< std::pair<Point, unsigned> > points_b_in
 		point_3 = make_pair(Point(dt.triangle(face)[2][0], dt.triangle(face)[2][1], dt.triangle(face)[2][2]), face->vertex(2)->info());
 
 		plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment
-		//extracting the dip angle and the dip direction
 		vector <string> centroid = current_plane.center();		//extracting the centroid of a Delaunay triangle
 
 		double x_d = current_plane.get_dip()[0]; //extracting coordinates of the dip vector of a planar Delaunay triangle
@@ -807,7 +799,6 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 
 	for (int i = 0; i < number_of_files; i++) { //sample values of dip angle - because we have a terrain, we have a maximum limit for dip angle
 		sample_dipang.push_back(random_dip(re)); //random_dip(re)
-		//assert(sample_dipang[i] == 1);
 	}
 
 	for (int i = 0; i < number_of_files; i++) { //sample orientation
@@ -818,7 +809,6 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 
 	vector <vector<double>>  poles;
 	vector <double> triplet;
-	//cout << "Tests: " << endl;
 	for (int i = 0; i < number_of_files; i++) {
 		double x = -sin(orientation[i].first / converter) * cos(orientation[i].second / converter);
 		double y = -sin(orientation[i].first / converter) * sin(orientation[i].second / converter);
@@ -829,22 +819,6 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 			y = y * -1;
 			z = z * -1;
 		}
-		//The below code tests whether the orientations specified by the user are converted correctly into XYZ coordinates and can be back-transformed into orientations
-		/*
-		double help_azimuth = (atan2(y, x) * converter);
-		cout << "Back-transformed dip direction: " << fixed << (help_azimuth>0 ?  help_azimuth: (help_azimuth + 360)) << endl;
-		cout << "Back-transformed dipangle: " << fixed << acos(z) * converter << endl;
-		cout << "Normal vector of the surface, as given by a user: " << fixed << x << " " << y << " " << z << endl;
-		*/
-		/*
-		double help_azimuth = (atan2(y, x) * converter);
-		if (help_azimuth < 0) {
-			help_azimuth += 360;
-		}
-		double help_dip_ang = acos(z) * converter;
-		cout << "Back-converted azimuth: " << help_azimuth << " " << "Original azimuth: " << orientation[i].second << endl;
-		cout << "Back-converted dip angle: " << help_dip_ang << " " << "Original dip angle: " << orientation[i].first << endl;
-		*/
 
 		triplet.push_back(x);
 		triplet.push_back(y);
@@ -867,7 +841,6 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 		orientation);
 
 	int i = 0; //name or number of the file
-	//std::cout << "Progress [%]: ";
 	while (i < number_of_files)
 	{
 		string dataframe_path = file_path;
@@ -932,24 +905,8 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 		vector<Point> points_b_inclined; //we must add elevation
 
 		for (auto it = points_b.begin(); it != points_b.end(); it++) {
-			//The test in this loop shows coordinates of normal vectors representing the surfaces
-			//cout << "1st (x):   " << poles[i][0] << "  2nd(y): " << poles[i][1] << "  3rd(z): " << poles[i][2] << endl;
 			points_b_inclined.push_back(Point((*it).x(), (*it).y(), (-poles[i][0] * (*it).x() - poles[i][1] * (*it).y()) / poles[i][2])); // z=(-2x-3y)/4, web.me.utexas.edu, find an equation for the plane passing through the point Q(0,0,0) and parallel to the plane 2x+3y+4z=5
 		}
-		/*
-		cout <<
-			"p1: " << points_b_inclined[2] << "\n" <<
-			"p2: " << points_b_inclined[5] << "\n" <<
-			"p3: " << points_b_inclined[19] << "\n";
-
-		plane plane1 = plane(points_b_inclined[2], points_b_inclined[5], points_b_inclined[19]);
-		string dip_inclined = plane1.get_dip_angle();
-		string azimuth_inclined = plane1.get_azimuth();
-		cout << "Dip angle of inclined:  " << dip_inclined << std::endl;
-		cout << "Azimuth of the inclined:  " << azimuth_inclined << std::endl;
-		cout << "Normal vector of an inclined:  " << plane1.get_normal().at(0) << "  " << plane(points_b_inclined[2], points_b_inclined[5], points_b_inclined[19]).get_normal().at(1) << " " << plane(points_b_inclined[2], points_b_inclined[5], points_b_inclined[19]).get_normal().at(2) << std::endl;
-		cout << "Length of the normal of the inclined: " << plane::length(plane1.get_normal()) << endl;
-		*/
 
 
 		//Comparison: The lambda function[](const Point& point1, const Point& point2) { return (point1.z() < point2.z()); }
@@ -959,7 +916,7 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 		);
 		auto& smallest_elev = *min_element(points_b_inclined.begin(), points_b_inclined.end(),
 			[](const Point& point1, const Point& point2) { return (point1.z() < point2.z()); }
-		);
+		); 
 
 		auto elevation_difference = greatest_elev.z() - smallest_elev.z(); //elevation difference is calculated for each terrain seperately
 		auto value_of_fault_throw = fault_unif(re) * max_elev_diff; //fault throws are generated; for example 1.1547 is the maximum elevation difference between points on a terrain with maximum dip=30 with size 1, (it has a normal vector [-0.5,0,-0.86], therefore 1*Z=-0.5/0.86=-0.57735, 2*1(size)*-0.57735=1.1547)
@@ -1044,7 +1001,6 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 
 
 			plane current_plane = plane(point_1.first, point_2.first, point_3.first);					//constructing a plane that is processed at the moment
-			//string result = current_plane.measure();								//extracting the dip angle and the dip direction
 			vector<string> centroid = current_plane.center();		//extracting the centroid of a Delaunay triangle
 
 			double x_n = current_plane.get_normal()[0]; //extracting coordinates of the normal vector of a planar Delaunay triangle
@@ -1106,7 +1062,6 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 				centroid_n1.push_back("undefined");
 				centroid_n1.push_back("undefined");
 				centroid_n1.push_back("undefined");
-				//n_euclidean1, n_angle1, n_cos1, n_euclidean1, d_angle1, d_cos1 = -9999;
 			}
 			else {
 				n1_point_1 = Point(dt.triangle(face->neighbor(0))[0][0], dt.triangle(face->neighbor(0))[0][1], dt.triangle(face->neighbor(0))[0][2]);
@@ -1131,7 +1086,6 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 
 
 				n_euclidean1 = euclidean_between_normals(current_plane, neighbor1_plane);
-				//assert(n_euclidean1 < 0.001);
 
 				n_angle1 = angle_between_normals(current_plane, neighbor1_plane);
 				n_cos1 = cosine_distance_between_normals(current_plane, neighbor1_plane);
@@ -1166,7 +1120,6 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 				centroid_n2.push_back("undefined");
 				centroid_n2.push_back("undefined");
 				centroid_n2.push_back("undefined");
-				//n_euclidean2, n_angle2, n_cos2, n_euclidean2, d_angle2, d_cos2= -9999;
 			}
 			else {
 				n2_point_1 = Point(dt.triangle(face->neighbor(1))[0][0], dt.triangle(face->neighbor(1))[0][1], dt.triangle(face->neighbor(1))[0][2]);
@@ -1192,7 +1145,6 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 
 
 				n_euclidean2 = euclidean_between_normals(current_plane, neighbor2_plane);
-				//assert(n_euclidean2 < 0.001);
 				n_angle2 = angle_between_normals(current_plane, neighbor2_plane);
 				n_cos2 = cosine_distance_between_normals(current_plane, neighbor2_plane);
 
@@ -1250,7 +1202,6 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 				d3_z_d = neighbor3_plane.get_dip()[2]; // plane::length(neighbor3_plane.get_dip());
 
 				n_euclidean3 = euclidean_between_normals(current_plane, neighbor3_plane);
-				//assert(n_euclidean3 < 0.001);
 				n_angle3 = angle_between_normals(current_plane, neighbor3_plane);
 				n_cos3 = cosine_distance_between_normals(current_plane, neighbor3_plane);
 
@@ -1262,8 +1213,6 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 
 			bool intersect = CGAL::do_intersect(Kernel::Triangle_2(t1, t2, t3), f1);
 			int intersect_label = (intersect == true ? 1 : -1);
-
-			// assert(stoi(current_plane.get_dip_angle()) ==  1 );
 
 			saving <<
 				current_plane.get_dip_angle() << ";" <<
@@ -1312,9 +1261,6 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 		save_normals_vtk(dt, points_b_inclined_noise_mod, file_path_nor);
 		save_dips_vtk(dt, points_b_inclined_noise_mod, file_path_dips);
 
-		/*double progress = i / number_of_files;
-		std::cout << progress;
-		std::cout << "\b \b"; */
 		i++;
 	}
 
