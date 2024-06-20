@@ -10,7 +10,7 @@ We will now explain the components of the framework.
 
 ## ad. 1 Generating labelled synthetic terrains based on random parameters with bounds introduced by a user.
 
-The first piece of software uses CGAL library to generate an arbitrary number of geological homoclines with calculated attributes. The homoclines are represented as triangulated terrains and the analysis is done for the faces of the triangulation. The calculated attributes can represent either local geometric attributes such as the orientation of normal and dip vectors or neighborhood analysis including distances between a specific triangle and its neighbors. The user should specify the bounds which determine ranges of intervals for the parameters. Then, random numbers from the uniform distribution are created from the determined intervals. We suggest giving ranges that best mimic the real terrains to be analyzed in the third step.
+The first piece of software (Broken_synthetic_terrains) uses CGAL library to generate an arbitrary number of geological homoclines with calculated attributes. The homoclines are represented as triangulated terrains and the analysis is done for the faces of the triangulation. The calculated attributes can represent either local geometric attributes such as the orientation of normal and dip vectors or neighborhood analysis including distances between a specific triangle and its neighbors. The user should specify the bounds which determine ranges of intervals for the parameters. Then, random numbers from the uniform distribution are created from the determined intervals. We suggest giving ranges that best mimic the real terrains to be analyzed in the third step.
 
 ![program1_documentation](https://github.com/michalmichalak997/MLgeom/assets/28152295/4343e70e-b13a-450f-8623-30dc1d4cfe1f)
 
@@ -22,7 +22,7 @@ Here, we can see a portion of the dataframe resulting from running the first pro
 
 ## ad. 2 Detecting faults for synthetic data. 
 
-A Python script is used to apply Support Vector Machine to the synthetic data set. 
+A Python script (Broken_terrains_training_testing_evaluating) is used to apply Support Vector Machine to the synthetic data set. 
 
 ![program2_documentation](https://github.com/michalmichalak997/MLgeom/assets/28152295/6276cee8-caaa-4c60-8c44-8480e2d6599b)
 
@@ -30,7 +30,7 @@ The above screenshot presents the key step in the data preparation for supervise
 
 ## ad. 3 Detecting faults for real terrains with calculated attributes.
 
-To finish the fault detection pipeline, the user must calculate terrain attributes for real data. The program from the first step cannot be used because it was intended to create synthetic terrains with labels. And our objective is now to use the fine-tuned program from step 2 to predict fault-related triangles for real data based on geometric attributes (orientation of normal/dip vectors with neighborhood analysis).
+To finish the fault detection pipeline, the user must calculate terrain attributes for real data. The program from the first step cannot be used because it was intended to create synthetic terrains with labels. And our objective is now to use the fine-tuned program from step 2 to predict fault-related triangles for real data based on geometric attributes (orientation of normal/dip vectors with neighborhood analysis). Please use the Broken_real_terrains code to calculate attributes for your real data.
 
 ## Software used.
 
