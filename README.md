@@ -1,4 +1,4 @@
-# Broken terrains v. 1.0
+# Broken terrains v. 1.0, https://doi.org/10.5281/zenodo.12375568 
 
 This software is intended to detect faults on homocline terrains. The software consists of three programs:
 
