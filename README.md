@@ -1,3 +1,8 @@
+
+![github-description](https://github.com/michalmichalak997/BrokenTerrains/assets/28152295/98955d71-e036-4db9-9a68-171f95ecedd4)
+
+
+
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12375568.svg)](https://doi.org/10.5281/zenodo.12375568)
 # Broken terrains v. 1.0
 
