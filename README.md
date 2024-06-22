@@ -1,6 +1,4 @@
-![image](https://github.com/michalmichalak997/BrokenTerrains/assets/28152295/2f666cc9-fcea-48ed-986a-7557fa54fc28)
-
-
+https://zenodo.org/badge/DOI/10.5281/zenodo.12375568.svg 
 # Broken terrains v. 1.0
 
 This software is intended to detect faults on homocline terrains. The software consists of three programs:
