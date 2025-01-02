@@ -17,11 +17,11 @@ We will now explain the components of the framework.
 
 ## ad. 1 Generating labelled synthetic slopes based on random parameters with bounds introduced by a user.
 
-The first piece of software (Broken_synthetic_slopes) uses CGAL library to generate an arbitrary number of geological homoclines with calculated attributes. The homoclines are represented as triangulated slopes and the analysis is done for the faces of the triangulation. The calculated attributes can represent either local geometric attributes such as the orientation of normal and dip vectors or neighborhood analysis including distances between a specific triangle and its neighbors. The user should specify the bounds which determine ranges of intervals for the parameters. Then, random numbers from the uniform distribution are created from the determined intervals. We suggest giving ranges that best mimic the real slopes to be analyzed in the third step.
+The first piece of software (Broken_synthetic_subsurface_slopes) uses CGAL library to generate an arbitrary number of geological homoclines with calculated attributes. The homoclines are represented as triangulated slopes and the analysis is done for the faces of the triangulation. The calculated attributes can represent either local geometric attributes such as the orientation of normal and dip vectors or neighborhood analysis including distances between a specific triangle and its neighbors. The user should specify the bounds which determine ranges of intervals for the parameters. Then, random numbers from the uniform distribution are created from the determined intervals. We suggest giving ranges that best mimic the real subsurface slopes to be analyzed in the third step.
 
 ![program1_documentation](https://github.com/michalmichalak997/MLgeom/assets/28152295/4343e70e-b13a-450f-8623-30dc1d4cfe1f)
 
-In the attached screenshot, we can see that the user requested 300 files (slopes). Then, the size of the slope is constant because the lower bound (1) is equal to the upper bound (1). The dip angle will not be constant: it will vary between 2 and 5 degrees. Next, the dip direction will also vary between 40 and 70 degrees. The number of points in the triangulated slope will be the same (100). The noise applied to the surface will be a fraction (1-4%) of the elevation difference of the slope. The fault throw will be a fraction (5-10%) of the maximum elevation difference within the triangulated slope. 
+In the attached screenshot, we can see that the user requested 300 files (slopes). Then, the size of the slope is constant because the lower bound (1) is equal to the upper bound (1). The dip angle will not be constant: it will vary between 2 and 5 degrees. Next, the dip direction will also vary between 40 and 70 degrees. The number of points in the triangulated model of the slope will be the same (100). The noise applied to the surface will be a fraction (1-4%) of the elevation difference of the slope. The fault throw will be a fraction (5-10%) of the maximum elevation difference within the triangulated slope. 
 
 ![program1_documentation1](https://github.com/michalmichalak997/MLgeom/assets/28152295/3e65ad31-5762-4810-ba8b-ead86269f08d)
 
@@ -29,7 +29,7 @@ Here, we can see a portion of the dataframe resulting from running the first pro
 
 ## ad. 2 Detecting faults for synthetic data. 
 
-A Python script (Broken_slopes_training_testing_evaluating) is used to apply Support Vector Machine to the synthetic data set. 
+A Python script (Broken_subsurface_slopes_training_testing_evaluating) is used to apply Support Vector Machine to the synthetic data set. 
 
 ![program2_documentation](https://github.com/michalmichalak997/MLgeom/assets/28152295/6276cee8-caaa-4c60-8c44-8480e2d6599b)
 
@@ -37,7 +37,7 @@ The above screenshot presents the key step in the data preparation for supervise
 
 ## ad. 3 Detecting faults for real slopes with calculated attributes.
 
-To finish the fault detection pipeline, the user must calculate slope attributes for real data. The program from the first step cannot be used because it was intended to create synthetic slopes with labels. And our objective is now to use the fine-tuned program from step 2 to predict fault-related triangles for real data based on geometric attributes (orientation of normal/dip vectors with neighborhood analysis). Please use the Broken_real_slopes code to calculate attributes for your real data. You will need to remove the first line "Index of the surface:0" from the "_output" file to proceed with the Python script.
+To finish the fault detection pipeline, the user must calculate slope attributes for real data. The program from the first step cannot be used because it was intended to create synthetic slopes with labels. And our objective is now to use the fine-tuned program from step 2 to predict fault-related triangles for real data based on geometric attributes (orientation of normal/dip vectors with neighborhood analysis). Please use the "Broken_real_subsurface_slopes" code to calculate attributes for your real data. You will need to remove the first line "Index of the surface:0" from the "_output" file to proceed with the Python script.
 
 ## Software used.
 
