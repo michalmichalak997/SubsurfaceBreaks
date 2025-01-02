@@ -20,8 +20,8 @@ int main()
 	vector <double> sample_dipang;
 
 	vector <std::pair<double, double>> orientation;
-	double min_terrain_dip =1;
-    double max_terrain_dip = 5; //for the dip
+	double min_slope_dip =1;
+    double max_slope_dip = 5; //for the dip
     int left_range_azimuth=355;
     int right_range_azimuth=7; //for azimuth
     cout << "Left range: " << left_range_azimuth << " " << "Right range: " << right_range_azimuth <<  endl;
@@ -29,14 +29,14 @@ int main()
         right_range_azimuth+=360;
     }
 
-    std::uniform_real_distribution<double> random_dip(min_terrain_dip, max_terrain_dip);
+    std::uniform_real_distribution<double> random_dip(min_slope_dip, max_slope_dip);
 	std::uniform_int_distribution<int> random_azimuth(left_range_azimuth, right_range_azimuth);
 
 	for (int i = 0; i < number_of_files; i++) { //sample values of dip direction
 		sample_dipdir.push_back(random_azimuth(re)); //random_azimuth(re)
 	}
 
-	for (int i = 0; i < number_of_files; i++) { //sample values of dip angle - because we have a terrain, we have a maximum limit for dip angle
+	for (int i = 0; i < number_of_files; i++) { //sample values of dip angle - because we have a subsurface slope, we have a maximum limit for dip angle
 		sample_dipang.push_back(random_dip(re)); //random_dip(re)
 		//assert(sample_dipang[i] == 1);
 	}
