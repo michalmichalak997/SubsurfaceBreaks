@@ -19,7 +19,8 @@ We will now explain the components of the framework.
 
 The first piece of software (Broken_synthetic_subsurface_slopes) uses CGAL library to generate an arbitrary number of geological homoclines with calculated attributes. The homoclines are represented as triangulated slopes and the analysis is done for the faces of the triangulation. The calculated attributes can represent either local geometric attributes such as the orientation of normal and dip vectors or neighborhood analysis including distances between a specific triangle and its neighbors. The user should specify the bounds which determine ranges of intervals for the parameters. Then, random numbers from the uniform distribution are created from the determined intervals. We suggest giving ranges that best mimic the real subsurface slopes to be analyzed in the third step.
 
-![program1_documentation](https://github.com/michalmichalak997/MLgeom/assets/28152295/4343e70e-b13a-450f-8623-30dc1d4cfe1f)
+![synthetic_terrain_generation_major_revision_01_2025](https://github.com/user-attachments/assets/824fd7a2-71d5-4088-b5d0-34c858b95c59)
+
 
 In the attached screenshot, we can see that the user requested 300 files (slopes). Then, the size of the slope is constant because the lower bound (1) is equal to the upper bound (1). The dip angle will not be constant: it will vary between 2 and 5 degrees. Next, the dip direction will also vary between 40 and 70 degrees. The number of points in the triangulated model of the slope will be the same (100). The noise applied to the surface will be a fraction (1-4%) of the elevation difference of the slope. The fault throw will be a fraction (5-10%) of the maximum elevation difference within the triangulated slope. 
 
