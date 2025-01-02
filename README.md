@@ -1,26 +1,27 @@
 
-![github-description](https://github.com/michalmichalak997/BrokenTerrains/assets/28152295/98955d71-e036-4db9-9a68-171f95ecedd4)
+![subsurfacebreaks](https://github.com/user-attachments/assets/5d12f127-ac5c-474f-9a0d-e8127086b457)
+
 
 
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12375568.svg)](https://doi.org/10.5281/zenodo.12375568)
-# Broken terrains v. 1.0
+# SubsurfaceBreaks v. 1.0
 
-This software is intended to detect faults on homocline terrains. The software consists of three programs:
+This software is intended to detect faults on subsurface slopes. The software consists of three programs:
 
-1. Generating labelled synthetic terrains based on random parameters with bounds introduced by a user (C++).
-2. Detecting faults for synthetic terrains using Support Vector Machine algorithm (Python).
-3. Detecting faults for real terrains with calculated attributes (C++).
+1. Generating labelled synthetic slopes based on random parameters with bounds introduced by a user (C++).
+2. Detecting faults for synthetic slopes using Support Vector Machine algorithm (Python).
+3. Detecting faults for real slopes with calculated attributes (C++).
 
 We will now explain the components of the framework.
 
-## ad. 1 Generating labelled synthetic terrains based on random parameters with bounds introduced by a user.
+## ad. 1 Generating labelled synthetic slopes based on random parameters with bounds introduced by a user.
 
-The first piece of software (Broken_synthetic_terrains) uses CGAL library to generate an arbitrary number of geological homoclines with calculated attributes. The homoclines are represented as triangulated terrains and the analysis is done for the faces of the triangulation. The calculated attributes can represent either local geometric attributes such as the orientation of normal and dip vectors or neighborhood analysis including distances between a specific triangle and its neighbors. The user should specify the bounds which determine ranges of intervals for the parameters. Then, random numbers from the uniform distribution are created from the determined intervals. We suggest giving ranges that best mimic the real terrains to be analyzed in the third step.
+The first piece of software (Broken_synthetic_slopes) uses CGAL library to generate an arbitrary number of geological homoclines with calculated attributes. The homoclines are represented as triangulated slopes and the analysis is done for the faces of the triangulation. The calculated attributes can represent either local geometric attributes such as the orientation of normal and dip vectors or neighborhood analysis including distances between a specific triangle and its neighbors. The user should specify the bounds which determine ranges of intervals for the parameters. Then, random numbers from the uniform distribution are created from the determined intervals. We suggest giving ranges that best mimic the real slopes to be analyzed in the third step.
 
 ![program1_documentation](https://github.com/michalmichalak997/MLgeom/assets/28152295/4343e70e-b13a-450f-8623-30dc1d4cfe1f)
 
-In the attached screenshot, we can see that the user requested 300 files (terrains). Then, the size of the terrains is constant because the lower bound (1) is equal to the upper bound (1). The dip angle will not be constant: it will vary between 2 and 5 degrees. Next, the dip direction will also vary between 40 and 70 degrees. The number of points in the triangulated terrains will be the same (100). The noise applied to the surface will be a fraction (1-4%) of the elevation difference of the terrain. The fault throw will be a fraction (5-10%) of the maximum elevation difference within the triangulated terrains. 
+In the attached screenshot, we can see that the user requested 300 files (slopes). Then, the size of the slope is constant because the lower bound (1) is equal to the upper bound (1). The dip angle will not be constant: it will vary between 2 and 5 degrees. Next, the dip direction will also vary between 40 and 70 degrees. The number of points in the triangulated slope will be the same (100). The noise applied to the surface will be a fraction (1-4%) of the elevation difference of the slope. The fault throw will be a fraction (5-10%) of the maximum elevation difference within the triangulated slope. 
 
 ![program1_documentation1](https://github.com/michalmichalak997/MLgeom/assets/28152295/3e65ad31-5762-4810-ba8b-ead86269f08d)
 
@@ -28,15 +29,15 @@ Here, we can see a portion of the dataframe resulting from running the first pro
 
 ## ad. 2 Detecting faults for synthetic data. 
 
-A Python script (Broken_terrains_training_testing_evaluating) is used to apply Support Vector Machine to the synthetic data set. 
+A Python script (Broken_slopes_training_testing_evaluating) is used to apply Support Vector Machine to the synthetic data set. 
 
 ![program2_documentation](https://github.com/michalmichalak997/MLgeom/assets/28152295/6276cee8-caaa-4c60-8c44-8480e2d6599b)
 
 The above screenshot presents the key step in the data preparation for supervised classification: the distances with neighbors are sorted (Angle_Max, Angle_Min, Angle_intermediate). This ensures that we eliminate randomness from the analysis, since the initial indices of the neighbors (first, second, third) correspond only to the counterclockwise order of the neighbors (https://graphics.stanford.edu/courses/cs368-04-spring/manuals/CGAL_Tutorial.pdf).
 
-## ad. 3 Detecting faults for real terrains with calculated attributes.
+## ad. 3 Detecting faults for real slopes with calculated attributes.
 
-To finish the fault detection pipeline, the user must calculate terrain attributes for real data. The program from the first step cannot be used because it was intended to create synthetic terrains with labels. And our objective is now to use the fine-tuned program from step 2 to predict fault-related triangles for real data based on geometric attributes (orientation of normal/dip vectors with neighborhood analysis). Please use the Broken_real_terrains code to calculate attributes for your real data. You will need to remove the first line "Index of the surface:0" from the "_output" file to proceed with the Python script.
+To finish the fault detection pipeline, the user must calculate slope attributes for real data. The program from the first step cannot be used because it was intended to create synthetic slopes with labels. And our objective is now to use the fine-tuned program from step 2 to predict fault-related triangles for real data based on geometric attributes (orientation of normal/dip vectors with neighborhood analysis). Please use the Broken_real_slopes code to calculate attributes for your real data. You will need to remove the first line "Index of the surface:0" from the "_output" file to proceed with the Python script.
 
 ## Software used.
 
@@ -69,7 +70,7 @@ As can be seen, the program properly sorted points according to the elevation.
 
 As can be seen, angles 3 and 363 are considered equal. This is to allow users to sample from intervals crossing N (360=0) direction. For example, the left range of the azimuth can be 355 and the right range can be 5 (which is equal to 365). 
 
-3. It tests whether the distances calculated in C++ program are equal to those calculated in R. For Euclidean and cosine distances the differences are very small (E-06). For angular distances the errors are greater (E-04-E-02). This effect can be likely attributed to different implementations of acos() function between C++ and R. We believe that the errors are not significant and can be tolerated for geological applications such as detecting faults on geological terrains. However, if precision is critical, we suggest rewriting the code using other types, for example long double instead of double.
+3. It tests whether the distances calculated in C++ program are equal to those calculated in R. For Euclidean and cosine distances the differences are very small (E-06). For angular distances the errors are greater (E-04-E-02). This effect can be likely attributed to different implementations of acos() function between C++ and R. We believe that the errors are not significant and can be tolerated for geological applications such as detecting faults on geological slopes. However, if precision is critical, we suggest rewriting the code using other types, for example long double instead of double.
 
 ![image](https://github.com/michalmichalak997/MLgeom/assets/28152295/19e77aa5-965c-4052-83a5-12ea19cd6467)
 
