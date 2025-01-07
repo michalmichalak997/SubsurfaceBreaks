@@ -30,7 +30,7 @@ Here, we can see a portion of the dataframe resulting from running the first pro
 
 ## ad. 2 Detecting faults for synthetic data. 
 
-A Python script (Broken_subsurface_slopes_training_testing_evaluating) is used to apply Support Vector Machine to the synthetic data set. 
+A Python script (Broken_subsurface_slopes_training_testing_evaluating_revision) is used to apply Support Vector Machine to the synthetic data set. 
 
 ![program2_documentation](https://github.com/michalmichalak997/MLgeom/assets/28152295/6276cee8-caaa-4c60-8c44-8480e2d6599b)
 
