@@ -218,7 +218,7 @@ public:
 		{
 			this->azimuth_degrees = ("LT");
 			this->dip_degrees = ("LT");
-			
+
 		}
 		else if (normal_vec[0] == 0 && normal_vec[1] == 0 && normal_vec[2] != 0) //result for a horizontal triangle
 		{
@@ -671,9 +671,9 @@ void save_dips_vtk(Delaunay dt, vector< std::pair<Point, unsigned> > points_b_in
 
 void save_model_parameters(string path_params,
 	int number_of_files, //number of files generated
-	int left_terrain_size, int right_terrain_size, //lower and upper bound for the set of terrain sizes
+	int left_subsurface_slope_size, int right_subsurface_slope_size, //lower and upper bound for the set of subsurface slope sizes
 	double left_range_azimuth, double right_range_azimuth, //for azimuth
-	double min_terrain_dip, double max_terrain_dip, //for the dip 
+	double min_subsurface_slope_dip, double max_subsurface_slope_dip, //for the dip 
 	int left_number_triangulation, int right_number_triangulation, // lower and upper bound for the number of points in the triangulation
 	double left_surface_noise, double right_surface_noise, // bounds for the noise introduced to the surface
 	double left_fault_throw, double right_fault_throw, //bounds for the values of fault throw	
@@ -682,12 +682,12 @@ void save_model_parameters(string path_params,
 	ofstream save_params(path_params);
 
 	save_params << "Number of files: " << number_of_files << "\n" <<
-		"Left terrain size: " << left_terrain_size << "\n" <<
-		"Right terrain size: " << right_terrain_size << "\n" <<
+		"Lower bound of the size of the subsurface slope: " << left_subsurface_slope_size << "\n" <<
+		"Upper bound of the size of the subsurface slope: " << right_subsurface_slope_size << "\n" <<
 		"Left range azimuth given: " << left_range_azimuth << "\n" <<
 		"Right range azimuth given: " << right_range_azimuth << "\n" <<
-		"Minimum dip given: " << min_terrain_dip << "\n" <<
-		"Maximum dip terrain given: " << max_terrain_dip << "\n" <<
+		"Minimum dip given: " << min_subsurface_slope_dip << "\n" <<
+		"Maximum dip given: " << max_subsurface_slope_dip << "\n" <<
 		"Lower bound for points in the triangulation: " << left_number_triangulation << "\n" <<
 		"Upper bound for points in the triangulation: " << right_number_triangulation << "\n" <<
 		"Lower bound for noise: " << left_surface_noise << "\n" <<
@@ -710,36 +710,36 @@ int main()
 	std::default_random_engine re(rd());
 
 	int number_of_files; //number of files generated
-	int left_terrain_size, right_terrain_size; //lower and upper bound for the set of terrain sizes
+	int left_subsurface_slope_size, right_subsurface_slope_size; //lower and upper bound for the set of subsurface slope sizes
 	double left_range_azimuth, right_range_azimuth; //for azimuth
-	double min_terrain_dip, max_terrain_dip; //for the dip 
+	double min_subsurface_slope_dip, max_subsurface_slope_dip; //for the dip 
 	int left_number_triangulation, right_number_triangulation; // lower and upper bound for the number of points in the triangulation
 	double left_surface_noise, right_surface_noise; // bounds for the noise introduced to the surface
 	double left_fault_throw, right_fault_throw; //bounds for the values of fault throw
 
 
 
-	std::cout << "This is generator of faulted triangulated surfaces. We need to introduce some parameters." << std::endl;
-	std::cout << "Specify path for the files, e.g. C:\\terrains\\ " << endl;
+	std::cout << "This is generator of faulted triangulated models of subsurface slopes. We need to introduce some parameters." << std::endl;
+	std::cout << "Specify path for the files, e.g. C:\\subsurface_slopes\\ " << endl;
 	string file_path;
 	cin >> file_path;
 	string path_params = file_path;
 	path_params.append("\\params.txt");
-	std::cout << "How many files (terrains) do you want? For example, you can enter 1000" << endl;
+	std::cout << "How many files (subsurface slopes) do you want? For example, you can enter 1000" << endl;
 	std::cin >> number_of_files;
 	if (number_of_files < 0) throw runtime_error("s");
 	std::cout << "There are " << number_of_files << " files" << endl;
-	std::cout << "If the size of the terrain should not be constant, specify different bounds ({left_terrain_size,...,right_terrain_size}). For example, you can enter 1" << std::endl;
-	std::cin >> left_terrain_size >> right_terrain_size;
-	if (left_terrain_size < 0) throw runtime_error("s");
-	cout << "The terrain sizes will be randomly selected from the set: {" << left_terrain_size << ",...," << right_terrain_size << "}" << endl;
-	std::uniform_int_distribution<int> random_terrain_size(left_terrain_size, right_terrain_size);
-	std::cout << "Specify minimum and maximum value of dip for the terrain. For example, you can enter 0.5 and 2.5." << endl;
-	std::cin >> min_terrain_dip >> max_terrain_dip;
-	if (min_terrain_dip < 0) throw runtime_error("s");
-	cout << "The minimum dip is: " << min_terrain_dip << ". And the maximum dip is: " << max_terrain_dip << endl;
-	if (max_terrain_dip > 90) throw runtime_error("s");
-	std::uniform_real_distribution<double> random_dip(min_terrain_dip, max_terrain_dip);
+	std::cout << "If the size of the subsurface slope should not be constant, specify different bounds ({left_subsurface_slope_size,...,right_subsurface_slope_size}). For example, you can enter 1" << std::endl;
+	std::cin >> left_subsurface_slope_size >> right_subsurface_slope_size;
+	if (left_subsurface_slope_size < 0) throw runtime_error("s");
+	cout << "The sizes of the subsurface slopes will be randomly selected from the set: {" << left_subsurface_slope_size << ",...," << right_subsurface_slope_size << "}" << endl;
+	std::uniform_int_distribution<int> random_subsurface_slope_size(left_subsurface_slope_size, right_subsurface_slope_size);
+	std::cout << "Specify minimum and maximum value of dip for the subsurface slope. For example, you can enter 0.5 and 2.5." << endl;
+	std::cin >> min_subsurface_slope_dip >> max_subsurface_slope_dip;
+	if (min_subsurface_slope_dip < 0) throw runtime_error("s");
+	cout << "The minimum dip is: " << min_subsurface_slope_dip << ". And the maximum dip is: " << max_subsurface_slope_dip << endl;
+	if (max_subsurface_slope_dip > 90) throw runtime_error("s");
+	std::uniform_real_distribution<double> random_dip(min_subsurface_slope_dip, max_subsurface_slope_dip);
 	std::cout << "Specify directional range for the azimuth. For example, if all azimuth should be considered, enter 0 and 360." << endl;
 	std::cin >> left_range_azimuth >> right_range_azimuth;
 	if (left_range_azimuth < 0) throw runtime_error("s");
@@ -749,7 +749,7 @@ int main()
 	}
 	std::cout << "The left bound of azimuth is: " << left_range_azimuth << ". And the right bound for azimuth is: " << right_range_azimuth << endl;
 	std::uniform_real_distribution<double> random_azimuth(left_range_azimuth, right_range_azimuth);
-	std::cout << "If the number of points in the terrain should not be constant, specify different bounds ({left_number_triangulation,...,right_number_triangulation}). For example, you can enter 100 and 100." << endl;
+	std::cout << "If the number of points in the subsurface slope should not be constant, specify different bounds ({left_number_triangulation,...,right_number_triangulation}). For example, you can enter 100 and 100." << endl;
 	std::cin >> left_number_triangulation >> right_number_triangulation;
 	if (left_number_triangulation < 3) throw runtime_error("s");
 	cout << "The lower bound for points in the triangulation is: " << left_number_triangulation << ". And the upper bound for points in the triangulation is: " << right_number_triangulation << endl;
@@ -782,10 +782,10 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
  From the coordinates of the normal vector, we can derive elevation (Z) coordinates for points (a,0) and (-a,0).
 */
 	int user_dip_direction = 0;
-	double user_dip_angle = max_terrain_dip;
+	double user_dip_angle = max_subsurface_slope_dip;
 	double n_max_x = -sin(user_dip_angle / converter) * cos(user_dip_direction / converter);
 	double n_max_z = -cos(user_dip_angle / converter);
-	double max_elev_diff = 2 * right_terrain_size * abs(n_max_x / n_max_z);
+	double max_elev_diff = 2 * right_subsurface_slope_size * abs(n_max_x / n_max_z);
 
 
 
@@ -797,7 +797,7 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 		sample_dipdir.push_back(random_azimuth(re)); //random_azimuth(re)
 	}
 
-	for (int i = 0; i < number_of_files; i++) { //sample values of dip angle - because we have a terrain, we have a maximum limit for dip angle
+	for (int i = 0; i < number_of_files; i++) { //sample values of dip angle - because we have a subsurface slope, we have a maximum limit for dip angle
 		sample_dipang.push_back(random_dip(re)); //random_dip(re)
 	}
 
@@ -832,9 +832,9 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 	save_model_parameters(
 		path_params,
 		number_of_files, //number of files generated
-		left_terrain_size, right_terrain_size, //lower and upper bound for the set of terrain sizes
+		left_subsurface_slope_size, right_subsurface_slope_size, //lower and upper bound for the set of subsurface_slope sizes
 		left_range_azimuth, right_range_azimuth, //for azimuth
-		min_terrain_dip, max_terrain_dip, //for the dip 
+		min_subsurface_slope_dip, max_subsurface_slope_dip, //for the dip 
 		left_number_triangulation, right_number_triangulation, // lower and upper bound for the number of points in the triangulation
 		left_surface_noise, right_surface_noise, // bounds for the noise introduced to the surface
 		left_fault_throw, right_fault_throw, //bounds for the values of fault throw	
@@ -884,7 +884,7 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 
 		vector<Point_2> points_f; //vector for storing fault lines
 
-		Point_o_generator f(random_terrain_size(re)); // faults (f), argument denotes the size of a square, the points representing a fault line lie on the boundary of the square, because we have an outside generator
+		Point_o_generator f(random_subsurface_slope_size(re)); // faults (f), argument denotes the size of a square, the points representing a fault line lie on the boundary of the square, because we have an outside slope
 
 		std::copy_n(f, 2, back_inserter(points_f));
 
@@ -898,7 +898,7 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 
 
 		vector<Point_2> points_b; //vector for storing boreholes/points
-		Point_i_generator b(random_terrain_size(re)); // boreholes (b), argument denotes the size of a square, adding 100 points inside (because we have an inside generator)
+		Point_i_generator b(random_subsurface_slope_size(re)); // boreholes (b), argument denotes the size of a square, adding 100 points inside (because we have an inside min_sub)
 
 		std::copy_n(b, random_points_triangulation(re), back_inserter(points_b));
 
@@ -916,10 +916,10 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 		);
 		auto& smallest_elev = *min_element(points_b_inclined.begin(), points_b_inclined.end(),
 			[](const Point& point1, const Point& point2) { return (point1.z() < point2.z()); }
-		); 
+		);
 
-		auto elevation_difference = greatest_elev.z() - smallest_elev.z(); //elevation difference is calculated for each terrain seperately
-		auto value_of_fault_throw = fault_unif(re) * max_elev_diff; //fault throws are generated; for example 1.1547 is the maximum elevation difference between points on a terrain with maximum dip=30 with size 1, (it has a normal vector [-0.5,0,-0.86], therefore 1*Z=-0.5/0.86=-0.57735, 2*1(size)*-0.57735=1.1547)
+		auto elevation_difference = greatest_elev.z() - smallest_elev.z(); //elevation difference is calculated for each subsurface_slope seperately
+		auto value_of_fault_throw = fault_unif(re) * max_elev_diff; //fault throws are generated; for example 1.1547 is the maximum elevation difference between points on a subsurface slope with maximum dip=30 with size 1, (it has a normal vector [-0.5,0,-0.86], therefore 1*Z=-0.5/0.86=-0.57735, 2*1(size)*-0.57735=1.1547)
 
 		vector<Point> points_b_inclined_noise; //we must add noise to elevation
 
@@ -1266,4 +1266,4 @@ that the upper bound for fault throw depends on the maximum dip angle in the dat
 
 	system("pause");
 	return 0;
-} 
+}
