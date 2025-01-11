@@ -4,7 +4,7 @@
 
 
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12375568.svg)](https://doi.org/10.5281/zenodo.12375568)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14589469.svg)](https://doi.org/10.5281/zenodo.14589469)
 # SubsurfaceBreaks v. 1.0
 
 This software is intended to detect faults on subsurface slopes. The software consists of three programs:
